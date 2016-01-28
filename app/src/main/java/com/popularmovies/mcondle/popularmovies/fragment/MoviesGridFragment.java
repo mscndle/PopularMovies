@@ -70,7 +70,9 @@ public class MoviesGridFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_movies_grid, container, false);
 
-        mMoviesAdapter = new MoviesAdapter()
+
+
+        mMoviesAdapter = new MoviesAdapter(getActivity());
 
         GridView gridView = (GridView) v.findViewById(R.id.gridView);
         gridView.setAdapter(new MoviesAdapter(getActivity()));
@@ -96,8 +98,6 @@ public class MoviesGridFragment extends Fragment {
         @Override
         protected Movie[] doInBackground(String... params) {
             //TODO - make network call as soon as this fragment is loaded
-
-
 
             return null;
         }
