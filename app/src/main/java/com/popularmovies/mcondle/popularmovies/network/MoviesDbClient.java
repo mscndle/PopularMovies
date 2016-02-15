@@ -1,9 +1,14 @@
 package com.popularmovies.mcondle.popularmovies.network;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.popularmovies.mcondle.popularmovies.model.Movie;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +31,8 @@ public class MoviesDbClient {
 
     private static final String API_KEY = "39759d3e11a3b8d6194c19814150629c";
 
-    private static final String API_BASE_MOVIE = "http://api.themoviedb.org/3/discover/movie";
-    private static final String API_BASE_POSTER = "http://image.tmdb.org/t/p/w185"; //using size w185 for now
+    public static final String API_BASE_MOVIE = "api.themoviedb.org/3/discover/movie";
+    public static final String API_BASE_POSTER = "http://image.tmdb.org/t/p/w185"; //using size w185 for now
 //    private static final String API_MOVIE_DISCOVER = API_BASE_MOVIE + "?sort_by=popularity.desc&api_key=" + API_KEY;
 
     public MoviesDbClient() {
@@ -40,7 +46,7 @@ public class MoviesDbClient {
 
         try {
             uri = builder.scheme("http")
-                    .authority(API_BASE_MOVIE)
+                    .encodedAuthority(API_BASE_MOVIE)
                     .appendQueryParameter("sort_by", "popularity.desc")
                     .appendQueryParameter("api_key", API_KEY)
                     .build();
@@ -58,15 +64,42 @@ public class MoviesDbClient {
      * @return  Default list of movies returned by the discover movie endpoint
      * sorted by popularity
      */
-    List<Movie> getDefaultMoviesList() {
+    public List<Movie> getDefaultMoviesList() {
+        final String JSON_RESULTS = "results";
+        JSONArray moviesJsonArray = new JSONArray();
+        List<Movie> defaultMoviesList;
+
+        try {
+            JSONObject moviesJsonObject = new JSONObject(getDefaultMoviesListJson());
+            moviesJsonArray = moviesJsonObject.getJSONArray(JSON_RESULTS);
+
+        } catch (JSONException jse) {
+            Log.d(TAG, "-----> getDefaultMoviesList()" + jse.toString());
+
+        } finally {
+            if (moviesJsonArray != null) {
+                defaultMoviesList = Movie.fromJson(moviesJsonArray);
+            } else {
+                defaultMoviesList = new ArrayList<>();
+            }
+        }
+
+        return defaultMoviesList;
+    }
+
+    public List<Movie> getPopularMoviesList() {
+        return null;
+    }
+
+    public List<Movie> getLatestMoviesList() {
         return null;
     }
 
     /**
-     *
-     * @return
+     * Private helper to get
+     * @return  Json string of the moves list
      */
-    String getDefaultMoviesListJson() {
+    private String getDefaultMoviesListJson() {
         String moviesJson = null;
         HttpURLConnection urlConnection = null;
         BufferedReader br = null;
