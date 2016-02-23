@@ -1,10 +1,10 @@
 package com.popularmovies.mcondle.popularmovies.network;
 
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.popularmovies.mcondle.popularmovies.model.Movie;
+import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,15 +39,20 @@ public class MoviesDbClient {
         // TODO - check sample code if it's a good idea to call the endpoint in the constructor?
     }
 
-    private URL getDiscoverMovieUrl() {
+    private URL getDiscoverMovieUrl(SortOrder sortOrder) {
         Uri.Builder builder = new Uri.Builder();
         URL url = null;
         Uri uri;
 
+        String sortOrderStr = "popularity.desc";
+        if (sortOrder == SortOrder.HIGHEST_RATED) {
+            sortOrderStr = "vote_average.desc";
+        }
+
         try {
             uri = builder.scheme("http")
                     .encodedAuthority(API_BASE_MOVIE)
-                    .appendQueryParameter("sort_by", "popularity.desc")
+                    .appendQueryParameter("sort_by", sortOrderStr)
                     .appendQueryParameter("api_key", API_KEY)
                     .build();
 
@@ -61,16 +66,16 @@ public class MoviesDbClient {
     }
 
     /**
-     * @return  Default list of movies returned by the discover movie endpoint
-     * sorted by popularity
+     * @return  Most popular list of movies returned by the discover movie endpoint
+     * this is also the default list loaded when
      */
-    public List<Movie> getDefaultMoviesList() {
+    public List<Movie> getMoviesList(SortOrder sortOrder) {
         final String JSON_RESULTS = "results";
         JSONArray moviesJsonArray = new JSONArray();
         List<Movie> defaultMoviesList;
 
         try {
-            JSONObject moviesJsonObject = new JSONObject(getDefaultMoviesListJson());
+            JSONObject moviesJsonObject = new JSONObject(getMoviesListJson(sortOrder));
             moviesJsonArray = moviesJsonObject.getJSONArray(JSON_RESULTS);
 
         } catch (JSONException jse) {
@@ -87,25 +92,17 @@ public class MoviesDbClient {
         return defaultMoviesList;
     }
 
-    public List<Movie> getPopularMoviesList() {
-        return null;
-    }
-
-    public List<Movie> getLatestMoviesList() {
-        return null;
-    }
-
     /**
      * Private helper to get
      * @return  Json string of the moves list
      */
-    private String getDefaultMoviesListJson() {
+    private String getMoviesListJson(SortOrder sortOrder) {
         String moviesJson = null;
         HttpURLConnection urlConnection = null;
         BufferedReader br = null;
 
         try {
-            URL url = getDiscoverMovieUrl();
+            URL url = getDiscoverMovieUrl(sortOrder);
             urlConnection = (HttpURLConnection) url.openConnection();
 
             InputStream inputStream = urlConnection.getInputStream();

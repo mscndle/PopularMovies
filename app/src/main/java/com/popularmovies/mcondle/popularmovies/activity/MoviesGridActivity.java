@@ -4,9 +4,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
 import com.popularmovies.mcondle.popularmovies.R;
+import com.popularmovies.mcondle.popularmovies.fragment.MovieDetailsFragment;
 import com.popularmovies.mcondle.popularmovies.fragment.MoviesGridFragment;
+import com.popularmovies.mcondle.popularmovies.model.Movie;
 
-public class MoviesGridActivity extends ActionBarActivity {
+public class MoviesGridActivity extends ActionBarActivity implements MoviesGridFragment.MoviesClickListener {
+
+    public static final String MOVIE_DETAIL_KEY = "MOVIE_DETAIL_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,5 +22,18 @@ public class MoviesGridActivity extends ActionBarActivity {
                     .add(R.id.gridActivityFrameLayout, new MoviesGridFragment())
                     .commit();
         }
+    }
+
+    public void onMovieClicked(Movie movie) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(MOVIE_DETAIL_KEY, movie);
+
+        MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
+        movieDetailsFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.gridActivityFrameLayout, movieDetailsFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

@@ -1,5 +1,6 @@
 package com.popularmovies.mcondle.popularmovies.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,13 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.adapter.MoviesAdapter;
 import com.popularmovies.mcondle.popularmovies.model.Movie;
+import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
 
 import java.util.ArrayList;
@@ -28,21 +29,31 @@ import java.util.List;
  */
 public class MoviesGridFragment extends Fragment {
 
-    public enum SortOrder {
-        DEFAULT,
-        POPULAR,
-        LATEST
+    private MoviesClickListener moviesClickListener;
+
+    public interface MoviesClickListener {
+        void onMovieClicked(Movie movie);
     }
 
     private MoviesAdapter moviesAdapter;
     private ArrayList<Movie> moviesList;
 
     public MoviesGridFragment() {
-
     }
 
     public Context getContext() {
         return getActivity();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof MoviesClickListener) {
+            moviesClickListener = (MoviesClickListener) activity;
+        } else {
+            throw new ClassCastException(activity.toString() +
+                    " must implement MoviesGridFragment.MoviesClickListener");
+        }
     }
 
     @Override
@@ -72,11 +83,11 @@ public class MoviesGridFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_sort_latest) {
-            updateMoviesList(SortOrder.LATEST);
+        if (id == R.id.action_sort_highest_rated) {
+            updateMoviesList(SortOrder.HIGHEST_RATED);
 
-        } else if (id == R.id.action_sort_popular) {
-            updateMoviesList(SortOrder.POPULAR);
+        } else if (id == R.id.action_sort_most_popular) {
+            updateMoviesList(SortOrder.MOST_POPULAR);
         }
 
         return super.onOptionsItemSelected(item);
@@ -86,7 +97,7 @@ public class MoviesGridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        updateMoviesList(SortOrder.DEFAULT);
+        updateMoviesList(SortOrder.MOST_POPULAR);
 
         View v = inflater.inflate(R.layout.fragment_movies_grid, container, false);
         moviesAdapter = new MoviesAdapter(getContext(), moviesList);
@@ -97,7 +108,9 @@ public class MoviesGridFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
+                Movie movie = moviesAdapter.getItem(position);
+                moviesClickListener.onMovieClicked(movie);
             }
         });
 
@@ -122,12 +135,10 @@ public class MoviesGridFragment extends Fragment {
 
             switch (params[0]) {
                 default:
-                case DEFAULT:
-                    return client.getDefaultMoviesList();
-                case POPULAR:
-                    return client.getPopularMoviesList();
-                case LATEST:
-                    return client.getLatestMoviesList();
+                case MOST_POPULAR:
+                    return client.getMoviesList(SortOrder.MOST_POPULAR);
+                case HIGHEST_RATED:
+                    return client.getMoviesList(SortOrder.HIGHEST_RATED);
             }
         }
 
