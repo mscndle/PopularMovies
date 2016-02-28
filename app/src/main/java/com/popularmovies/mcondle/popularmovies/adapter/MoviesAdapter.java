@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.model.Movie;
+import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
 import com.squareup.picasso.Picasso;
 
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * Created by mscndle on 12/29/15.
  */
-public class MoviesAdapter extends ArrayAdapter<Movie> {
+public class MoviesAdapter extends ArrayAdapter<MovieLite> {
 
     private static final String TAG = MoviesAdapter.class.getSimpleName();
 
@@ -27,7 +28,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         ImageView imageView;
     }
 
-    public MoviesAdapter(Context context, List<Movie> moviesList) {
+    public MoviesAdapter(Context context, List<MovieLite> moviesList) {
         super(context, 0, moviesList);
     }
 
@@ -35,7 +36,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
      * create a new ImageView for each item referenced by the adapter
      */
     public View getView(int position, View convertView, ViewGroup parent) {
-        Movie movie = getItem(position);
+        MovieLite movie = getItem(position);
         String posterPath = movie.getPosterPath();
         String finalPosterPath = MoviesDbClient.API_BASE_POSTER + posterPath;
 

@@ -7,6 +7,7 @@ import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.fragment.MovieDetailsFragment;
 import com.popularmovies.mcondle.popularmovies.fragment.MoviesGridFragment;
 import com.popularmovies.mcondle.popularmovies.model.Movie;
+import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 
 public class MoviesGridActivity extends ActionBarActivity implements MoviesGridFragment.MoviesClickListener {
 
@@ -24,9 +25,9 @@ public class MoviesGridActivity extends ActionBarActivity implements MoviesGridF
         }
     }
 
-    public void onMovieClicked(Movie movie) {
+    public void onMovieClicked(long movieId) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(MOVIE_DETAIL_KEY, movie);
+        bundle.putLong(MOVIE_DETAIL_KEY, movieId);
 
         MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
         movieDetailsFragment.setArguments(bundle);

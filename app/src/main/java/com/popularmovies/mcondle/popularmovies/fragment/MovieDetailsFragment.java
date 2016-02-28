@@ -1,8 +1,10 @@
 package com.popularmovies.mcondle.popularmovies.fragment;
 
 import android.app.ActionBar;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,16 @@ import com.popularmovies.mcondle.popularmovies.model.Movie;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
+
 /**
  * Created by mscndle on 1/2/16.
  */
 public class MovieDetailsFragment extends Fragment {
+
+    private Movie movie;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,28 +43,68 @@ public class MovieDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
-        Movie movie = getArguments().getParcelable(MoviesGridActivity.MOVIE_DETAIL_KEY);
-        populateView(v, movie);
+        long movieId = getArguments().getLong(MoviesGridActivity.MOVIE_DETAIL_KEY);
+        getExtraMovieDetails(movieId);
+        populateView(v);
 
         return v;
     }
 
-    private void populateView(View v, Movie movie) {
+    private void getExtraMovieDetails(long movieId) {
+        FetchMovieDetailsTask task = new FetchMovieDetailsTask();
+
+        try {
+            movie = task.execute(movieId).get();
+        } catch (Exception ie) {
+            //
+        }
+
+    }
+
+    private void populateView(View v) {
         // grab views
         TextView movieTitle = (TextView) v.findViewById(R.id.movie_title);
         ImageView movieDetailImg = (ImageView) v.findViewById(R.id.movie_detail_img);
         TextView movieReleaseDate = (TextView) v.findViewById(R.id.movie_release_date);
         TextView movieRunningTime = (TextView) v.findViewById(R.id.movie_running_time);
         TextView movieRating = (TextView) v.findViewById(R.id.movie_rating);
+        TextView movieSynposis = (TextView) v.findViewById(R.id.movie_synopsis);
 
-        // fill views
-        movieTitle.setText(movie.getTitle());
-        Picasso.with(getActivity()).load(MoviesDbClient.API_BASE_POSTER + movie.getPosterPath()).into(movieDetailImg);
-        movieReleaseDate.setText(movie.getReleaseDate());
-        movieRunningTime.setText("MUST_FILL_THIS");
-        movieRating.setText(String.valueOf(movie.getPopularity()));
+        // fill title and image
+        movieTitle.setText(movie.getOriginalTitle());
+        Picasso.with(getActivity())
+                .load(MoviesDbClient.API_BASE_POSTER + movie.getPosterPath())
+                .into(movieDetailImg);
+
+        // parse year from date
+        String[] dateArr = movie.getReleaseDate().split("-");
+        movieReleaseDate.setText(dateArr[0]);
+
+        String formattedRuntime = String.valueOf(movie.getRuntime()) + "minutes";
+        movieRunningTime.setText(formattedRuntime);
+
+        movieRating.setText(String.valueOf(movie.getVoteAverage() + "/10"));
+        movieSynposis.setText(movie.getOverview());
     }
 
+    private void grabMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    public class FetchMovieDetailsTask extends AsyncTask<Long, Void, Movie> {
+
+        @Override
+        protected Movie doInBackground(Long... params) {
+            MoviesDbClient moviesDbClient = MoviesDbClient.getMoviesDbClient();
+            return moviesDbClient.getMovieDetails(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Movie movie) {
+            //
+        }
+
+    }
 
 
 

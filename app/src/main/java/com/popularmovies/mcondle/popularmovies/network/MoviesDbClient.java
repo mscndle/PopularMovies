@@ -1,9 +1,11 @@
 package com.popularmovies.mcondle.popularmovies.network;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.popularmovies.mcondle.popularmovies.model.Movie;
+import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 
 import org.json.JSONArray;
@@ -17,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +34,22 @@ public class MoviesDbClient {
 
     private static final String API_KEY = "39759d3e11a3b8d6194c19814150629c";
 
-    public static final String API_BASE_MOVIE = "api.themoviedb.org/3/discover/movie";
+    public static final String API_BASE_DISCOVER_MOVIE = "api.themoviedb.org/3/discover/movie";
+    public static final String API_BASE_MOVIE_DETAILS = "api.themoviedb.org/3/movie";
     public static final String API_BASE_POSTER = "http://image.tmdb.org/t/p/w185"; //using size w185 for now
-//    private static final String API_MOVIE_DISCOVER = API_BASE_MOVIE + "?sort_by=popularity.desc&api_key=" + API_KEY;
 
-    public MoviesDbClient() {
-        // TODO - check sample code if it's a good idea to call the endpoint in the constructor?
+    private static MoviesDbClient moviesDbClient;
+
+    public static MoviesDbClient getMoviesDbClient() {
+        if (moviesDbClient == null) {
+            moviesDbClient = new MoviesDbClient();
+        }
+
+        return moviesDbClient;
+    }
+
+    private MoviesDbClient() {
+        // singleton
     }
 
     private URL getDiscoverMovieUrl(SortOrder sortOrder) {
@@ -51,7 +64,7 @@ public class MoviesDbClient {
 
         try {
             uri = builder.scheme("http")
-                    .encodedAuthority(API_BASE_MOVIE)
+                    .encodedAuthority(API_BASE_DISCOVER_MOVIE)
                     .appendQueryParameter("sort_by", sortOrderStr)
                     .appendQueryParameter("api_key", API_KEY)
                     .build();
@@ -65,14 +78,35 @@ public class MoviesDbClient {
         return url;
     }
 
+    private URL getMovieDetailsUrl(long movieId) {
+        Uri.Builder builder = new Uri.Builder();
+        URL url = null;
+        Uri uri;
+
+        try {
+            uri = builder.scheme("http")
+                    .encodedAuthority(API_BASE_MOVIE_DETAILS)
+                    .appendPath(String.valueOf(movieId))
+                    .appendQueryParameter("api_key", API_KEY)
+                    .build();
+
+            url = new URL(uri.toString());
+
+        } catch (IOException ioe) {
+            Log.d(TAG, ioe.toString());
+        }
+
+        return url;
+    }
+
     /**
      * @return  Most popular list of movies returned by the discover movie endpoint
      * this is also the default list loaded when
      */
-    public List<Movie> getMoviesList(SortOrder sortOrder) {
+    public List<MovieLite> getMoviesList(SortOrder sortOrder) {
         final String JSON_RESULTS = "results";
         JSONArray moviesJsonArray = new JSONArray();
-        List<Movie> defaultMoviesList;
+        List<MovieLite> defaultMoviesList;
 
         try {
             JSONObject moviesJsonObject = new JSONObject(getMoviesListJson(sortOrder));
@@ -83,7 +117,7 @@ public class MoviesDbClient {
 
         } finally {
             if (moviesJsonArray != null) {
-                defaultMoviesList = Movie.fromJson(moviesJsonArray);
+                defaultMoviesList = MovieLite.fromJson(moviesJsonArray);
             } else {
                 defaultMoviesList = new ArrayList<>();
             }
@@ -96,6 +130,7 @@ public class MoviesDbClient {
      * Private helper to get
      * @return  Json string of the moves list
      */
+    @Nullable
     private String getMoviesListJson(SortOrder sortOrder) {
         String moviesJson = null;
         HttpURLConnection urlConnection = null;
@@ -143,6 +178,52 @@ public class MoviesDbClient {
         }
 
         return moviesJson;
+    }
+
+    public Movie getMovieDetails(long movieId) {
+        Movie movie = new Movie();
+
+        try {
+            JSONObject jsonObject = new JSONObject(getMovieDetailsJson(movieId));
+            movie = Movie.fromJson(jsonObject);
+
+        } catch (JSONException jse) {
+            Log.d(TAG, jse.toString());
+        }
+
+        return movie;
+    }
+
+    private String getMovieDetailsJson(long movieId) {
+        HttpURLConnection urlConnection = null;
+        BufferedReader br = null;
+        String movie = null;
+
+        try {
+            URL url = getMovieDetailsUrl(movieId);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStreamReader reader = new InputStreamReader(urlConnection.getInputStream());
+
+            br = new BufferedReader(reader);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            movie = sb.toString();
+            br.close();
+
+        } catch (IOException ioe) {
+            Log.d(TAG, ioe.toString());
+        }
+
+        if (urlConnection != null) {
+            urlConnection.disconnect();
+        }
+
+        return movie;
     }
 
 

@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.adapter.MoviesAdapter;
 import com.popularmovies.mcondle.popularmovies.model.Movie;
+import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
 
@@ -30,13 +30,14 @@ import java.util.List;
 public class MoviesGridFragment extends Fragment {
 
     private MoviesClickListener moviesClickListener;
+    private SortOrder sortOrder;
 
     public interface MoviesClickListener {
-        void onMovieClicked(Movie movie);
+        void onMovieClicked(long movieId);
     }
 
     private MoviesAdapter moviesAdapter;
-    private ArrayList<Movie> moviesList;
+    private ArrayList<MovieLite> moviesList;
 
     public MoviesGridFragment() {
     }
@@ -66,6 +67,10 @@ public class MoviesGridFragment extends Fragment {
         } else {
             moviesList = savedInstanceState.getParcelableArrayList("moviesList");
         }
+
+        // set default sorting order
+        sortOrder = SortOrder.MOST_POPULAR;
+        // added here so that the movies list (based on sorting order) is preserved when coming back from the details page
     }
 
     @Override
@@ -84,12 +89,13 @@ public class MoviesGridFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_sort_highest_rated) {
-            updateMoviesList(SortOrder.HIGHEST_RATED);
+            sortOrder = SortOrder.HIGHEST_RATED;
 
         } else if (id == R.id.action_sort_most_popular) {
-            updateMoviesList(SortOrder.MOST_POPULAR);
+            sortOrder = SortOrder.MOST_POPULAR;
         }
 
+        updateMoviesList(sortOrder);
         return super.onOptionsItemSelected(item);
     }
 
@@ -97,7 +103,7 @@ public class MoviesGridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        updateMoviesList(SortOrder.MOST_POPULAR);
+        updateMoviesList(sortOrder);
 
         View v = inflater.inflate(R.layout.fragment_movies_grid, container, false);
         moviesAdapter = new MoviesAdapter(getContext(), moviesList);
@@ -109,13 +115,26 @@ public class MoviesGridFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
-                Movie movie = moviesAdapter.getItem(position);
-                moviesClickListener.onMovieClicked(movie);
+                MovieLite movie = moviesAdapter.getItem(position);
+                moviesClickListener.onMovieClicked(movie.getId());
             }
         });
 
         return v;
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        updateMoviesList(sortOrder);
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        moviesList.clear();
+//    }
+//
 
     /**
      * called to get the movies list based on the sortOrder
@@ -126,12 +145,12 @@ public class MoviesGridFragment extends Fragment {
         fetchMoviesTask.execute(sortOrder);
     }
 
-    public class FetchMoviesTask extends AsyncTask<SortOrder, Void, List<Movie>> {
+    public class FetchMoviesTask extends AsyncTask<SortOrder, Void, List<MovieLite>> {
 
         private final String TAG = FetchMoviesTask.class.getSimpleName();
 
-        protected List<Movie> doInBackground(SortOrder... params) {
-            MoviesDbClient client = new MoviesDbClient();
+        protected List<MovieLite> doInBackground(SortOrder... params) {
+            MoviesDbClient client = MoviesDbClient.getMoviesDbClient();
 
             switch (params[0]) {
                 default:
@@ -143,11 +162,11 @@ public class MoviesGridFragment extends Fragment {
         }
 
         @Override
-        public void onPostExecute(List<Movie> result) {
+        public void onPostExecute(List<MovieLite> result) {
             if (result != null) {
                 moviesAdapter.clear();
 
-                for (Movie m : result) {
+                for (MovieLite m : result) {
                     moviesAdapter.add(m);
                 }
             }

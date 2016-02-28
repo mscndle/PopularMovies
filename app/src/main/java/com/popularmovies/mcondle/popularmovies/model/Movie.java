@@ -36,6 +36,13 @@ public class Movie implements Parcelable {
     private boolean video;
     private double vote_average;
 
+    // these fields are grabbed in the MovieDetailsFragment
+    private long budget;
+    private String homepage;
+    private String imdbId;
+    private long revenue;
+    private int runtime;
+
     public Movie() {
         // empty constructor if Gson is used later
     }
@@ -53,7 +60,12 @@ public class Movie implements Parcelable {
                  double popularity,
                  long vote_count,
                  boolean video,
-                 double vote_average) {
+                 double vote_average,
+                 long budget,
+                 String homepage,
+                 String imdbId,
+                 long revenue,
+                 int runtime) {
 
         this.id = id;
         this.title = title;
@@ -69,6 +81,12 @@ public class Movie implements Parcelable {
         this.vote_count = vote_count;
         this.video = video;
         this.vote_average = vote_average;
+
+        this.budget = budget;
+        this.homepage = homepage;
+        this.imdbId = imdbId;
+        this.revenue = revenue;
+        this.runtime = runtime;
     }
 
     /**
@@ -94,14 +112,20 @@ public class Movie implements Parcelable {
             movie.video = jsonObject.getBoolean("video");
             movie.vote_average = jsonObject.getDouble("vote_average");
 
-            JSONArray jsonArray = jsonObject.getJSONArray("genre_ids");
-            int[] genre_ids = new int[jsonArray.length()];
+//            JSONArray jsonArray = jsonObject.getJSONArray("genre_ids");
+//            int[] genre_ids = new int[jsonArray.length()];
 
-            for (int i = 0; i < jsonArray.length(); i++) {  // jsonArray = [28, 12, 878, 53]
-//                genre_ids[i] = jsonArray.getJSONObject(i).getInt("");
-                genre_ids[i] = (Integer) jsonArray.get(i);
-            }
-            movie.genre_ids = genre_ids;
+//            for (int i = 0; i < jsonArray.length(); i++) {  // jsonArray = [28, 12, 878, 53]
+////                genre_ids[i] = jsonArray.getJSONObject(i).getInt("");
+//                genre_ids[i] = (Integer) jsonArray.get(i);
+//            }
+//            movie.genre_ids = genre_ids;
+
+            movie.budget = jsonObject.getLong("budget");
+            movie.homepage = jsonObject.getString("homepage");
+            movie.imdbId = jsonObject.getString("imdb_id");
+            movie.revenue = jsonObject.getLong("revenue");
+            movie.runtime = jsonObject.getInt("runtime");
 
         } catch (JSONException jse) {
             Log.d(TAG, "JSONException in Movie.fromJson(...) " + jse.toString());
@@ -246,6 +270,46 @@ public class Movie implements Parcelable {
 
     public void setVoteAverage(double vote_average) {
         this.vote_average = vote_average;
+    }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
+    public long getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(long revenue) {
+        this.revenue = revenue;
+    }
+
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
+
+    public String getHomepage() {
+        return homepage;
+    }
+
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
+    }
+
+    public long getBudget() {
+        return budget;
+    }
+
+    public void setBudget(long budget) {
+        this.budget = budget;
     }
 
     /********************************
