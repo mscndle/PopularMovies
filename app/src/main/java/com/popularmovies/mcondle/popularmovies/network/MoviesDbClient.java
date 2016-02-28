@@ -32,7 +32,8 @@ public class MoviesDbClient {
 
     private static final String TAG = MoviesDbClient.class.getSimpleName();
 
-    private static final String API_KEY = "39759d3e11a3b8d6194c19814150629c";
+    // PLEASE INSERT API_KEY HERE
+    private static final String API_KEY = "";
 
     public static final String API_BASE_DISCOVER_MOVIE = "api.themoviedb.org/3/discover/movie";
     public static final String API_BASE_MOVIE_DETAILS = "api.themoviedb.org/3/movie";
