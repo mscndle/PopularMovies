@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.popularmovies.mcondle.popularmovies.R;
-import com.popularmovies.mcondle.popularmovies.activity.MoviesGridActivity;
+import com.popularmovies.mcondle.popularmovies.activity.MoviesHomeActivity;
 import com.popularmovies.mcondle.popularmovies.model.Movie;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
 import com.squareup.picasso.Picasso;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by mscndle on 1/2/16.
@@ -43,7 +38,7 @@ public class MovieDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
-        long movieId = getArguments().getLong(MoviesGridActivity.MOVIE_DETAIL_KEY);
+        long movieId = getArguments().getLong(MoviesHomeActivity.MOVIE_DETAIL_KEY);
         getExtraMovieDetails(movieId);
         populateView(v);
 

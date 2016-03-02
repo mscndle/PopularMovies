@@ -1,6 +1,5 @@
 package com.popularmovies.mcondle.popularmovies.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,8 +14,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.popularmovies.mcondle.popularmovies.R;
-import com.popularmovies.mcondle.popularmovies.adapter.MoviesAdapter;
-import com.popularmovies.mcondle.popularmovies.model.Movie;
+import com.popularmovies.mcondle.popularmovies.adapter.MoviesListAdapter;
 import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
@@ -27,35 +25,43 @@ import java.util.List;
 /**
  * Created by mscndle on 11/28/15.
  */
-public class MoviesGridFragment extends Fragment {
+public class MostPopularFragment extends Fragment {
 
-    private MoviesClickListener moviesClickListener;
+//    private MoviesClickListener moviesClickListener;
     private SortOrder sortOrder;
 
-    public interface MoviesClickListener {
-        void onMovieClicked(long movieId);
-    }
+//    public interface MoviesClickListener {
+//        void onMovieClicked(long movieId);
+//    }
 
-    private MoviesAdapter moviesAdapter;
+    private MoviesListAdapter moviesListAdapter;
     private ArrayList<MovieLite> moviesList;
 
-    public MoviesGridFragment() {
+//    public MostPopularFragment() {
+//    }
+
+    public static MostPopularFragment newInstance() {
+        MostPopularFragment fragment = new MostPopularFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     public Context getContext() {
         return getActivity();
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof MoviesClickListener) {
-            moviesClickListener = (MoviesClickListener) activity;
-        } else {
-            throw new ClassCastException(activity.toString() +
-                    " must implement MoviesGridFragment.MoviesClickListener");
-        }
-    }
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        if (activity instanceof MoviesClickListener) {
+//            moviesClickListener = (MoviesClickListener) activity;
+//        } else {
+//            throw new ClassCastException(activity.toString() +
+//                    " must implement MostPopularFragment.MoviesClickListener");
+//        }
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,17 +112,17 @@ public class MoviesGridFragment extends Fragment {
         updateMoviesList(sortOrder);
 
         View v = inflater.inflate(R.layout.fragment_movies_grid, container, false);
-        moviesAdapter = new MoviesAdapter(getContext(), moviesList);
+        moviesListAdapter = new MoviesListAdapter(getContext(), moviesList);
 
         GridView gridView = (GridView) v.findViewById(R.id.movies_grid_view);
-        gridView.setAdapter(moviesAdapter);
+        gridView.setAdapter(moviesListAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
-                MovieLite movie = moviesAdapter.getItem(position);
-                moviesClickListener.onMovieClicked(movie.getId());
+                MovieLite movie = moviesListAdapter.getItem(position);
+//                moviesClickListener.onMovieClicked(movie.getId());
             }
         });
 
@@ -164,10 +170,10 @@ public class MoviesGridFragment extends Fragment {
         @Override
         public void onPostExecute(List<MovieLite> result) {
             if (result != null) {
-                moviesAdapter.clear();
+                moviesListAdapter.clear();
 
                 for (MovieLite m : result) {
-                    moviesAdapter.add(m);
+                    moviesListAdapter.add(m);
                 }
             }
         }

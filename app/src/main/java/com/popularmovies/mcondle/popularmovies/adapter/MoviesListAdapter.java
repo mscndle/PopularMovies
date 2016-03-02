@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.popularmovies.mcondle.popularmovies.R;
-import com.popularmovies.mcondle.popularmovies.model.Movie;
 import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
 import com.squareup.picasso.Picasso;
@@ -20,15 +19,15 @@ import java.util.List;
  *
  * Created by mscndle on 12/29/15.
  */
-public class MoviesAdapter extends ArrayAdapter<MovieLite> {
+public class MoviesListAdapter extends ArrayAdapter<MovieLite> {
 
-    private static final String TAG = MoviesAdapter.class.getSimpleName();
+    private static final String TAG = MoviesListAdapter.class.getSimpleName();
 
     private static class ViewHolder {
         ImageView imageView;
     }
 
-    public MoviesAdapter(Context context, List<MovieLite> moviesList) {
+    public MoviesListAdapter(Context context, List<MovieLite> moviesList) {
         super(context, 0, moviesList);
     }
 
