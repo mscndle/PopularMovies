@@ -27,18 +27,10 @@ import java.util.List;
  */
 public class MostPopularFragment extends Fragment {
 
-//    private MoviesClickListener moviesClickListener;
     private SortOrder sortOrder;
-
-//    public interface MoviesClickListener {
-//        void onMovieClicked(long movieId);
-//    }
 
     private MoviesListAdapter moviesListAdapter;
     private ArrayList<MovieLite> moviesList;
-
-//    public MostPopularFragment() {
-//    }
 
     public static MostPopularFragment newInstance() {
         MostPopularFragment fragment = new MostPopularFragment();
@@ -51,17 +43,6 @@ public class MostPopularFragment extends Fragment {
     public Context getContext() {
         return getActivity();
     }
-
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        if (activity instanceof MoviesClickListener) {
-//            moviesClickListener = (MoviesClickListener) activity;
-//        } else {
-//            throw new ClassCastException(activity.toString() +
-//                    " must implement MostPopularFragment.MoviesClickListener");
-//        }
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
