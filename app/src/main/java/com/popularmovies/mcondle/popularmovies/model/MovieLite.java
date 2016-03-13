@@ -19,6 +19,7 @@ public class MovieLite implements Parcelable {
     private static final String TAG = MovieLite.class.getSimpleName();
 
     private long id;
+    private String title;
     private String poster_path;
 
     public long getId() {
@@ -27,6 +28,14 @@ public class MovieLite implements Parcelable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getPosterPath() {
@@ -41,8 +50,9 @@ public class MovieLite implements Parcelable {
         //
     }
 
-    public MovieLite(long id, String poster_path) {
+    public MovieLite(long id, String title, String poster_path) {
         this.id = id;
+        this.title = title;
         this.poster_path = poster_path;
     }
 
@@ -57,6 +67,7 @@ public class MovieLite implements Parcelable {
 
         try {
             movieLite.id = jsonObject.getLong("id");
+            movieLite.title = jsonObject.getString("title");
             movieLite.poster_path = jsonObject.getString("poster_path");
 
         } catch (JSONException jse) {

@@ -1,23 +1,19 @@
 package com.popularmovies.mcondle.popularmovies.fragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.popularmovies.mcondle.popularmovies.R;
-import com.popularmovies.mcondle.popularmovies.adapter.MoviesListAdapter;
+import com.popularmovies.mcondle.popularmovies.adapter.MoviesGridAdapter;
 import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.model.SortOrder;
-import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
+import com.popularmovies.mcondle.popularmovies.network.FetchMoviesTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +21,11 @@ import java.util.List;
 /**
  * Created by mscndle on 11/28/15.
  */
-public class MostPopularFragment extends Fragment {
+public class MostPopularFragment extends Fragment implements MoviesAsyncDelegate {
 
-    private SortOrder sortOrder;
+    private static final String KEY_MOVIES_LIST = "moviesListPopular";
 
-    private MoviesListAdapter moviesListAdapter;
+    private MoviesGridAdapter moviesGridAdapter;
     private ArrayList<MovieLite> moviesList;
 
     public static MostPopularFragment newInstance() {
@@ -47,62 +43,36 @@ public class MostPopularFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setHasOptionsMenu(true);
 
-        if (savedInstanceState == null || !savedInstanceState.containsKey("moviesList")) {
+        if (savedInstanceState == null || !savedInstanceState.containsKey(KEY_MOVIES_LIST)) {
             moviesList = new ArrayList<>();
         } else {
-            moviesList = savedInstanceState.getParcelableArrayList("moviesList");
+            moviesList = savedInstanceState.getParcelableArrayList(KEY_MOVIES_LIST);
         }
-
-        // set default sorting order
-        sortOrder = SortOrder.MOST_POPULAR;
-        // added here so that the movies list (based on sorting order) is preserved when coming back from the details page
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("moviesList", moviesList);
+        outState.putParcelableArrayList(KEY_MOVIES_LIST, moviesList);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_movies_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_sort_highest_rated) {
-            sortOrder = SortOrder.HIGHEST_RATED;
-
-        } else if (id == R.id.action_sort_most_popular) {
-            sortOrder = SortOrder.MOST_POPULAR;
-        }
-
-        updateMoviesList(sortOrder);
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        updateMoviesList(sortOrder);
+        updateMoviesList(SortOrder.MOST_POPULAR);
 
         View v = inflater.inflate(R.layout.fragment_movies_grid, container, false);
-        moviesListAdapter = new MoviesListAdapter(getContext(), moviesList);
+        moviesGridAdapter = new MoviesGridAdapter(getContext(), moviesList);
 
-        GridView gridView = (GridView) v.findViewById(R.id.movies_grid_view);
-        gridView.setAdapter(moviesListAdapter);
+        GridView gridView = (GridView) v.findViewById(R.id.movies_grid_recycler_view);
+        gridView.setAdapter(moviesGridAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
-                MovieLite movie = moviesListAdapter.getItem(position);
+//                MovieLite movie = moviesGridAdapter.getItem(position);
 //                moviesClickListener.onMovieClicked(movie.getId());
             }
         });
@@ -128,37 +98,16 @@ public class MostPopularFragment extends Fragment {
      * @param sortOrder default, popular, latest
      */
     private void updateMoviesList(SortOrder sortOrder) {
-        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask(this);
         fetchMoviesTask.execute(sortOrder);
     }
 
-    public class FetchMoviesTask extends AsyncTask<SortOrder, Void, List<MovieLite>> {
+    public void asyncComplete(List<MovieLite> movies) {
+        moviesGridAdapter.clear();
 
-        private final String TAG = FetchMoviesTask.class.getSimpleName();
-
-        protected List<MovieLite> doInBackground(SortOrder... params) {
-            MoviesDbClient client = MoviesDbClient.getMoviesDbClient();
-
-            switch (params[0]) {
-                default:
-                case MOST_POPULAR:
-                    return client.getMoviesList(SortOrder.MOST_POPULAR);
-                case HIGHEST_RATED:
-                    return client.getMoviesList(SortOrder.HIGHEST_RATED);
-            }
+        for (MovieLite m : movies) {
+            moviesGridAdapter.add(m);
         }
-
-        @Override
-        public void onPostExecute(List<MovieLite> result) {
-            if (result != null) {
-                moviesListAdapter.clear();
-
-                for (MovieLite m : result) {
-                    moviesListAdapter.add(m);
-                }
-            }
-        }
-
     }
 
 }

@@ -58,7 +58,7 @@ public class MovieDetailsFragment extends Fragment {
 
     private void populateView(View v) {
         // grab views
-        TextView movieTitle = (TextView) v.findViewById(R.id.movie_title);
+        TextView movieTitle = (TextView) v.findViewById(R.id.movie_original_title);
         ImageView movieDetailImg = (ImageView) v.findViewById(R.id.movie_detail_img);
         TextView movieReleaseDate = (TextView) v.findViewById(R.id.movie_release_date);
         TextView movieRunningTime = (TextView) v.findViewById(R.id.movie_running_time);
