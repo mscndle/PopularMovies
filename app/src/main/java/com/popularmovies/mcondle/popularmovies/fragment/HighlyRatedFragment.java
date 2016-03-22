@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by mscndle on 2/28/16.
  */
-public class HighlyRatedFragment extends Fragment implements MoviesAsyncDelegate {
+public class HighlyRatedFragment extends Fragment {
 
     private static final String KEY_MOVIES_LIST = "moviesListHighlyRated";
 
@@ -68,7 +68,7 @@ public class HighlyRatedFragment extends Fragment implements MoviesAsyncDelegate
         moviesGridAdapter = new MoviesGridAdapter(getContext(), moviesList);
 
         GridView gridView = (GridView) v.findViewById(R.id.movies_grid_recycler_view);
-        gridView.setAdapter(moviesGridAdapter);
+//        gridView.setAdapter(moviesGridAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,12 +85,12 @@ public class HighlyRatedFragment extends Fragment implements MoviesAsyncDelegate
         fetchMoviesTask.execute(sortOrder);
     }
 
-    public void asyncComplete(List<MovieLite> movies) {
-        moviesGridAdapter.clear();
-
-        for (MovieLite m : movies) {
-            moviesGridAdapter.add(m);
-        }
-    }
+//    public void asyncComplete(List<MovieLite> movies) {
+//        moviesGridAdapter.clear();
+//
+//        for (MovieLite m : movies) {
+//            moviesGridAdapter.add(m);
+//        }
+//    }
 
 }

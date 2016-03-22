@@ -1,5 +1,6 @@
 package com.popularmovies.mcondle.popularmovies.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.model.MovieLite;
+import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
     private static final String TAG = MoviesGridAdapter.class.getSimpleName();
 
     private List<MovieLite> movieLiteList;
+    private Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
@@ -33,6 +37,11 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
             this.textView = (TextView) itemView.findViewById(R.id.movie_original_title);
 
         }
+    }
+
+    public MoviesGridAdapter(Context context, List<MovieLite> movieLiteList) {
+        this.context = context;
+        this.movieLiteList = movieLiteList;
     }
 
     @Override
@@ -48,8 +57,20 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(MoviesGridAdapter.ViewHolder viewHolder, int position) {
+        // get the MovieLite model based on the position
+        MovieLite movieLite = movieLiteList.get(position);
 
+        // set each item's views based on model and viewholder
+        ImageView imageView = viewHolder.imageView;
+        TextView textView = viewHolder.textView;
+
+        // set movie poster as grid icon and textview as movie title
+        Picasso.with(context)
+                .load(MoviesDbClient.API_BASE_POSTER + movieLite.getPosterPath())
+                .into(imageView);
+
+        textView.setText(movieLite.getTitle());
     }
 
     @Override

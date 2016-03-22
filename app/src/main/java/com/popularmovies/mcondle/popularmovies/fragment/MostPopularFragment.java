@@ -40,17 +40,6 @@ public class MostPopularFragment extends Fragment implements MoviesAsyncDelegate
         return getActivity();
     }
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        if (activity instanceof MoviesClickListener) {
-//            moviesClickListener = (MoviesClickListener) activity;
-//        } else {
-//            throw new ClassCastException(activity.toString() +
-//                    " must implement MostPopularFragment.MoviesClickListener");
-//        }
-//    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
