@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.model.MovieLite;
-import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -38,8 +36,15 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        MovieLite movieLite = get
+    public MoviesGridAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // get the inflater to inflate the layout
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        // inflate custom layout
+        View view = inflater.inflate(R.layout.movie_item, parent, false);
+
+        // return a new ViewHolder instance
+        return new ViewHolder(view);
     }
 
     @Override
