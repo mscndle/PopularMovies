@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.model.MovieLite;
@@ -27,15 +28,25 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
     private List<MovieLite> movieLiteList;
     private Context context;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+//    public static interface ViewHolderClicks {
+//        public void onClick(View caller);
+//    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;
         TextView textView;
+//        ViewHolderClicks viewHolderClicks;
 
         public ViewHolder(final View itemView) {
             super(itemView);
             this.imageView = (ImageView) itemView.findViewById(R.id.movie_img);
             this.textView = (TextView) itemView.findViewById(R.id.movie_original_title);
+            itemView.setOnClickListener(this);
+        }
 
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(imageView.getContext(), "To be implemented", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -44,9 +55,17 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
         this.movieLiteList = movieLiteList;
     }
 
+    /**
+     * Inflates the layout of a single item from xml and returns the ViewHolder
+     * @param parent the parent
+     * @param viewType the viewType
+     * @return  MoviesGridAdapter.ViewHolder
+     */
     @Override
     public MoviesGridAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // get the inflater to inflate the layout
+
+        // grab inflater to inflate ViewHolder based on view id
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         // inflate custom layout
@@ -56,6 +75,11 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
         return new ViewHolder(view);
     }
 
+    /**
+     * Populates data into the item through the viewHolder
+     * @param viewHolder    the ViewHolder
+     * @param position  the position
+     */
     @Override
     public void onBindViewHolder(MoviesGridAdapter.ViewHolder viewHolder, int position) {
         // get the MovieLite model based on the position
@@ -81,31 +105,37 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
         return movieLiteList.size();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
 
-//    /**
-//     * create a new ImageView for each item referenced by the adapter
-//     */
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        MovieLite movie = getItem(position);
-//        String posterPath = movie.getPosterPath();
-//        String finalPosterPath = MoviesDbClient.API_BASE_POSTER + posterPath;
-//
-//        ViewHolder viewHolder;
-//
-//        if (convertView == null) {
-//            viewHolder = new ViewHolder();
-//
-//            convertView = LayoutInflater.from(getContext()).inflate(
-//                    R.layout.movie_item, null);
-//            convertView.setTag(viewHolder);
-//
-//        } else {
-//            viewHolder = (ViewHolder) convertView.getTag();
-//        }
-//
-//        viewHolder.imageView = (ImageView) convertView.findViewById(R.id.movie_img);
-//        Picasso.with(getContext()).load(finalPosterPath).into(viewHolder.imageView);
-//
-//        return convertView;
-//    }
+    /**
+     * Inserts a new item into the adapter on a predefined position
+     * @param position  the position
+     * @param movieLite the object
+     */
+    public void insert(int position, MovieLite movieLite) {
+        movieLiteList.add(position, movieLite);
+        notifyItemInserted(position);
+    }
+
+    /**
+     * Inserts a new items into the adapter
+     * @param movieLite the object
+     */
+    public void insert(MovieLite movieLite) {
+        movieLiteList.add(movieLite);
+        notifyDataSetChanged();
+    }
+
+    public void remove(MovieLite movieLite) {
+        int position = movieLiteList.indexOf(movieLite);
+        movieLiteList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void clear() {
+        movieLiteList.clear();
+    }
 }

@@ -3,6 +3,9 @@ package com.popularmovies.mcondle.popularmovies.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,8 @@ import java.util.List;
 public class MostPopularFragment extends Fragment implements MoviesAsyncDelegate {
 
     private static final String KEY_MOVIES_LIST = "moviesListPopular";
+    private static final int GRID_COLUMNS_PHONE = 2;
+    private static final int GRID_COLUMNS_TABLET = 3;
 
     private MoviesGridAdapter moviesGridAdapter;
     private ArrayList<MovieLite> moviesList;
@@ -64,27 +69,26 @@ public class MostPopularFragment extends Fragment implements MoviesAsyncDelegate
         updateMoviesList(SortOrder.MOST_POPULAR);
 
         View v = inflater.inflate(R.layout.fragment_movies_grid, container, false);
+        RecyclerView gridRecyclerView = (RecyclerView) v.findViewById(R.id.movies_grid_recycler_view);
+
         moviesGridAdapter = new MoviesGridAdapter(getContext(), moviesList);
+        gridRecyclerView.setAdapter(moviesGridAdapter);
+        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), GRID_COLUMNS_PHONE));
 
-        GridView gridView = (GridView) v.findViewById(R.id.movies_grid_recycler_view);
-        gridView.setAdapter(moviesGridAdapter);
+        RecyclerView.ItemAnimator animator = new DefaultItemAnimator();
+        animator.setAddDuration(1000);
+        animator.setRemoveDuration(1000);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                MovieLite movie = moviesGridAdapter.getItem(position);
-//                moviesClickListener.onMovieClicked(movie.getId());
-            }
-        });
+        gridRecyclerView.setItemAnimator(animator);
 
         return v;
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        updateMoviesList(sortOrder);
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateMoviesList(SortOrder.MOST_POPULAR);
+    }
 //
 //    @Override
 //    public void onPause() {
@@ -106,7 +110,7 @@ public class MostPopularFragment extends Fragment implements MoviesAsyncDelegate
         moviesGridAdapter.clear();
 
         for (MovieLite m : movies) {
-            moviesGridAdapter.add(m);
+            moviesGridAdapter.insert(m);
         }
     }
 
