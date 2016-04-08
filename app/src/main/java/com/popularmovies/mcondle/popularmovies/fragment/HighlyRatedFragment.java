@@ -3,6 +3,9 @@ package com.popularmovies.mcondle.popularmovies.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +21,16 @@ import com.popularmovies.mcondle.popularmovies.network.FetchMoviesTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RecursiveAction;
 
 /**
  * Created by mscndle on 2/28/16.
  */
-public class HighlyRatedFragment extends Fragment {
+public class HighlyRatedFragment extends Fragment implements MoviesAsyncDelegate {
 
     private static final String KEY_MOVIES_LIST = "moviesListHighlyRated";
+    private static final int GRID_COLUMNS_PHONE = 2;
+    private static final int GRID_COLUMNS_TABLET = 3;
 
     private ArrayList<MovieLite> moviesList;
     private MoviesGridAdapter moviesGridAdapter;
@@ -65,19 +71,25 @@ public class HighlyRatedFragment extends Fragment {
         updateMoviesList(SortOrder.HIGHEST_RATED);
 
         View v = inflater.inflate(R.layout.fragment_movies_grid, container, false);
+        RecyclerView gridRecyclerView = (RecyclerView) v.findViewById(R.id.movies_grid_recycler_view);
+
         moviesGridAdapter = new MoviesGridAdapter(getContext(), moviesList);
+        gridRecyclerView.setAdapter(moviesGridAdapter);
+        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), GRID_COLUMNS_PHONE));
 
-        GridView gridView = (GridView) v.findViewById(R.id.movies_grid_recycler_view);
-//        gridView.setAdapter(moviesGridAdapter);
+        RecyclerView.ItemAnimator animator = new DefaultItemAnimator();
+        animator.setAddDuration(1000);
+        animator.setRemoveDuration(1000);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT);
-            }
-        });
+        gridRecyclerView.setItemAnimator(animator);
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateMoviesList(SortOrder.HIGHEST_RATED);
     }
 
     private void updateMoviesList(SortOrder sortOrder) {
@@ -85,12 +97,12 @@ public class HighlyRatedFragment extends Fragment {
         fetchMoviesTask.execute(sortOrder);
     }
 
-//    public void asyncComplete(List<MovieLite> movies) {
-//        moviesGridAdapter.clear();
-//
-//        for (MovieLite m : movies) {
-//            moviesGridAdapter.add(m);
-//        }
-//    }
+    public void asyncComplete(List<MovieLite> movies) {
+        moviesGridAdapter.clear();
+
+        for (MovieLite m : movies) {
+            moviesGridAdapter.insert(m);
+        }
+    }
 
 }
