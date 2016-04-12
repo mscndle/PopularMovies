@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.adapter.MoviesViewPagerAdapter;
-import com.popularmovies.mcondle.popularmovies.fragment.MovieDetailsFragment;
 import com.popularmovies.mcondle.popularmovies.layout.SlidingTabLayout;
 import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 
@@ -90,20 +89,5 @@ public class MoviesHomeActivity extends AppCompatActivity {
 //            }
 //        });
     }
-
-    //todo - delete if not using the listener approach to start details activity from movies fragments
-    public void onMovieClicked(long movieId) {
-        Bundle bundle = new Bundle();
-        bundle.putLong(MOVIE_DETAIL_KEY, movieId);
-
-        MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
-        movieDetailsFragment.setArguments(bundle);
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.gridActivityFrameLayout, movieDetailsFragment)
-//                .addToBackStack(null)
-//                .commit();
-    }
-
 
 }

@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.popularmovies.mcondle.popularmovies.R;
+import com.popularmovies.mcondle.popularmovies.activity.MovieDetailsActivity;
+import com.popularmovies.mcondle.popularmovies.activity.MoviesHomeActivity;
 import com.popularmovies.mcondle.popularmovies.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
+import com.popularmovies.mcondle.popularmovies.util.ViewHolderClicked;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,38 +23,44 @@ import java.util.List;
  *
  * Created by mscndle on 12/29/15.
  */
-public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.ViewHolder> {
+public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.ViewHolder> implements ViewHolderClicked {
 
     private static final String TAG = MoviesGridAdapter.class.getSimpleName();
 
     private List<MovieLite> movieLiteList;
     private Context context;
 
-//    public static interface ViewHolderClicks {
-//        public void onClick(View caller);
-//    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;
         TextView textView;
-//        ViewHolderClicks viewHolderClicks;
+        ViewHolderClicked viewHolderClicked;
 
-        public ViewHolder(final View itemView) {
+        public ViewHolder(final View itemView, ViewHolderClicked viewHolderClicks) {
             super(itemView);
+
             this.imageView = (ImageView) itemView.findViewById(R.id.movie_img);
             this.textView = (TextView) itemView.findViewById(R.id.movie_original_title);
+            this.viewHolderClicked = viewHolderClicks;
+
             itemView.setOnClickListener(this);
+            itemView.setPadding(2, 2, 2, 2);    // padding is added here and in the RecyclerView for symmetry
         }
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(imageView.getContext(), "To be implemented", Toast.LENGTH_SHORT).show();
+            viewHolderClicked.onViewHolderClicked(imageView.getContext(), getAdapterPosition());
         }
     }
 
     public MoviesGridAdapter(Context context, List<MovieLite> movieLiteList) {
         this.context = context;
         this.movieLiteList = movieLiteList;
+    }
+
+    @Override
+    public void onViewHolderClicked(Context context, int position) {
+        long movieId = getItem(position).getId();
+        MovieDetailsActivity.startWith((MoviesHomeActivity) context, movieId);
     }
 
     /**
@@ -72,7 +80,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
         View view = inflater.inflate(R.layout.movie_item, parent, false);
 
         // return a new ViewHolder instance
-        return new ViewHolder(view);
+        return new ViewHolder(view, this);
     }
 
     /**
@@ -118,6 +126,10 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
     public void insert(int position, MovieLite movieLite) {
         movieLiteList.add(position, movieLite);
         notifyItemInserted(position);
+    }
+
+    public MovieLite getItem(int position) {
+        return movieLiteList.get(position);
     }
 
     /**

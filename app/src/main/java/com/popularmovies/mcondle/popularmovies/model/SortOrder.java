@@ -5,5 +5,6 @@ package com.popularmovies.mcondle.popularmovies.model;
  */
 public enum SortOrder {
     MOST_POPULAR,
-    HIGHEST_RATED
+    HIGHEST_RATED,
+    FAVORITES
 }

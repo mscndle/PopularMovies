@@ -36,7 +36,7 @@ public class Movie implements Parcelable {
     private boolean video;
     private double vote_average;
 
-    // these fields are grabbed in the MovieDetailsFragment
+    // these fields are grabbed in the MovieDetailsActivity
     private long budget;
     private String homepage;
     private String imdbId;

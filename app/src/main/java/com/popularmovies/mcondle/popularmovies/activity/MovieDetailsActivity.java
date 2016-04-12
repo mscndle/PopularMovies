@@ -1,17 +1,18 @@
-package com.popularmovies.mcondle.popularmovies.fragment;
+package com.popularmovies.mcondle.popularmovies.activity;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.popularmovies.mcondle.popularmovies.R;
-import com.popularmovies.mcondle.popularmovies.activity.MoviesHomeActivity;
 import com.popularmovies.mcondle.popularmovies.model.Movie;
 import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
 import com.squareup.picasso.Picasso;
@@ -19,30 +20,42 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by mscndle on 1/2/16.
  */
-public class MovieDetailsFragment extends Fragment {
+public class MovieDetailsActivity extends Activity {
+
+    private static final String MOVIE_ID_KEY = "movieIdKey";
 
     private Movie movie;
+
+    public static void startWith(Activity origin) {
+        startWith(origin, null);
+    }
+
+    public static void startWith(Activity origin, Long movieId) {
+        Intent intent = new Intent(origin, MovieDetailsActivity.class);
+        if (movieId != null) {
+            intent.putExtra(MOVIE_ID_KEY, movieId);
+        }
+
+        origin.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setHasOptionsMenu(false);
 
-        ActionBar actionBar = getActivity().getActionBar(); // doing this to avoid NPE warnings
+        ActionBar actionBar = getActionBar(); // doing this to avoid NPE warnings
         if (actionBar != null) {
+            Toast.makeText(this, "actionBar NOT null, yay", Toast.LENGTH_SHORT).show();
             actionBar.setDisplayHomeAsUpEnabled(true);
+        } else {
+            Toast.makeText(this, "NULL", Toast.LENGTH_SHORT).show();
         }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_movie_details, container, false);
+        setContentView(R.layout.activity_movie_details);
 
-        long movieId = getArguments().getLong(MoviesHomeActivity.MOVIE_DETAIL_KEY);
+        long movieId = getIntent().getExtras().getLong(MOVIE_ID_KEY);
         getExtraMovieDetails(movieId);
-        populateView(v);
-
-        return v;
+        populateViews();
     }
 
     private void getExtraMovieDetails(long movieId) {
@@ -53,21 +66,20 @@ public class MovieDetailsFragment extends Fragment {
         } catch (Exception ie) {
             //
         }
-
     }
 
-    private void populateView(View v) {
+    private void populateViews() {
         // grab views
-        TextView movieTitle = (TextView) v.findViewById(R.id.movie_original_title);
-        ImageView movieDetailImg = (ImageView) v.findViewById(R.id.movie_detail_img);
-        TextView movieReleaseDate = (TextView) v.findViewById(R.id.movie_release_date);
-        TextView movieRunningTime = (TextView) v.findViewById(R.id.movie_running_time);
-        TextView movieRating = (TextView) v.findViewById(R.id.movie_rating);
-        TextView movieSynposis = (TextView) v.findViewById(R.id.movie_synopsis);
+        TextView movieTitle = (TextView) findViewById(R.id.movie_original_title);
+        ImageView movieDetailImg = (ImageView) findViewById(R.id.movie_detail_img);
+        TextView movieReleaseDate = (TextView) findViewById(R.id.movie_release_date);
+        TextView movieRunningTime = (TextView) findViewById(R.id.movie_running_time);
+        TextView movieRating = (TextView) findViewById(R.id.movie_rating);
+        TextView movieSynposis = (TextView) findViewById(R.id.movie_synopsis);
 
         // fill title and image
         movieTitle.setText(movie.getOriginalTitle());
-        Picasso.with(getActivity())
+        Picasso.with(this)
                 .load(MoviesDbClient.API_BASE_POSTER + movie.getPosterPath())
                 .into(movieDetailImg);
 

@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface MoviesAsyncDelegate {
 
-    public void asyncComplete(List<MovieLite> movies);
+    void asyncComplete(List<MovieLite> movies);
 
 }
