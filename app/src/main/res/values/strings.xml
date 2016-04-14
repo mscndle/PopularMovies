@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">PopularMovies</string>
 
+    // grid
     <string name="sort_most_popular">Sort: Most Popular</string>
     <string name="sort_highest_rated">Sort: Highest Rated</string>
+
+    // details
+    <string name="movie_poster">Movie Poster</string>
+
 </resources>

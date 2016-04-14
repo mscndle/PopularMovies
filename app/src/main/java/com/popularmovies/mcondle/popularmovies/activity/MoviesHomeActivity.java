@@ -12,15 +12,14 @@ import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 
 public class MoviesHomeActivity extends AppCompatActivity {
 
-    public static final String MOVIE_DETAIL_KEY = "MOVIE_DETAIL_KEY";
+    private static final int TAB_COUNT = 3;
 
-    ViewPager viewPager;
-    Toolbar toolBar;
-    MoviesViewPagerAdapter moviesViewPagerAdapter;
-    SlidingTabLayout tabLayout;
-    CharSequence tiles[] = {"POPULAR", "HIGHLY RATED", "FAVORITES"};
-    int tabCount = 3;
-    SortOrder sortOrder;
+    private Toolbar toolBar;
+    private ViewPager viewPager;
+    private SlidingTabLayout tabLayout;
+
+    private MoviesViewPagerAdapter moviesViewPagerAdapter;
+    private CharSequence tiles[] = {"POPULAR", "HIGHLY RATED", "FAVORITES"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +30,7 @@ public class MoviesHomeActivity extends AppCompatActivity {
         setSupportActionBar(toolBar);
 
         viewPager = (ViewPager) findViewById(R.id.movies_view_pager);
-        MoviesViewPagerAdapter moviesViewPagerAdapter =
-                new MoviesViewPagerAdapter(getSupportFragmentManager(), tiles, tabCount);
+        moviesViewPagerAdapter = new MoviesViewPagerAdapter(getSupportFragmentManager(), tiles, TAB_COUNT);
         viewPager.setAdapter(moviesViewPagerAdapter);
 
         tabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tab_layout);
@@ -45,49 +43,11 @@ public class MoviesHomeActivity extends AppCompatActivity {
         });
 
         tabLayout.setViewPager(viewPager);
-
-        setupListeners();
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_movies_fragment, menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//
-//        if (id == R.id.action_sort_highest_rated) {
-//            sortOrder = SortOrder.HIGHEST_RATED;
-//
-//        } else if (id == R.id.action_sort_most_popular) {
-//            sortOrder = SortOrder.MOST_POPULAR;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    private void setupListeners() {
-//
-//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-////                Toast.makeText(MoviesHomeActivity.this, "onPageScrolled(...) called from position: "
-////                                + position, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                Toast.makeText(MoviesHomeActivity.this, "onPageSelected(...) called from position: "
-//                        + position, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-////                Toast.makeText(MoviesHomeActivity.this, "onPageScrollStateChanged(...) called from state: "
-////                        + state, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
 }

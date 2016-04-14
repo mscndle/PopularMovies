@@ -5,9 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +24,12 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by mscndle on 1/2/16.
  */
-public class MovieDetailsActivity extends Activity {
+public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String MOVIE_ID_KEY = "movieIdKey";
+
+    private Toolbar toolbar;
+    private ViewPager viewPager;
 
     private Movie movie;
 
@@ -42,16 +49,12 @@ public class MovieDetailsActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActionBar actionBar = getActionBar(); // doing this to avoid NPE warnings
-        if (actionBar != null) {
-            Toast.makeText(this, "actionBar NOT null, yay", Toast.LENGTH_SHORT).show();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        } else {
-            Toast.makeText(this, "NULL", Toast.LENGTH_SHORT).show();
-        }
-
         setContentView(R.layout.activity_movie_details);
+
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
+
 
         long movieId = getIntent().getExtras().getLong(MOVIE_ID_KEY);
         getExtraMovieDetails(movieId);
@@ -70,28 +73,28 @@ public class MovieDetailsActivity extends Activity {
 
     private void populateViews() {
         // grab views
-        TextView movieTitle = (TextView) findViewById(R.id.movie_original_title);
-        ImageView movieDetailImg = (ImageView) findViewById(R.id.movie_detail_img);
-        TextView movieReleaseDate = (TextView) findViewById(R.id.movie_release_date);
-        TextView movieRunningTime = (TextView) findViewById(R.id.movie_running_time);
-        TextView movieRating = (TextView) findViewById(R.id.movie_rating);
-        TextView movieSynposis = (TextView) findViewById(R.id.movie_synopsis);
-
-        // fill title and image
-        movieTitle.setText(movie.getOriginalTitle());
-        Picasso.with(this)
-                .load(MoviesDbClient.API_BASE_POSTER + movie.getPosterPath())
-                .into(movieDetailImg);
-
-        // parse year from date
-        String[] dateArr = movie.getReleaseDate().split("-");
-        movieReleaseDate.setText(dateArr[0]);
-
-        String formattedRuntime = String.valueOf(movie.getRuntime()) + "minutes";
-        movieRunningTime.setText(formattedRuntime);
-
-        movieRating.setText(String.valueOf(movie.getVoteAverage() + "/10"));
-        movieSynposis.setText(movie.getOverview());
+//        TextView movieTitle = (TextView) findViewById(R.id.movie_original_title);
+//        ImageView movieDetailImg = (ImageView) findViewById(R.id.movie_detail_img);
+//        TextView movieReleaseDate = (TextView) findViewById(R.id.movie_release_date);
+//        TextView movieRunningTime = (TextView) findViewById(R.id.movie_running_time);
+//        TextView movieRating = (TextView) findViewById(R.id.movie_rating);
+//        TextView movieSynposis = (TextView) findViewById(R.id.movie_synopsis);
+//
+//        // fill title and image
+//        movieTitle.setText(movie.getOriginalTitle());
+//        Picasso.with(this)
+//                .load(MoviesDbClient.API_BASE_POSTER + movie.getPosterPath())
+//                .into(movieDetailImg);
+//
+//        // parse year from date
+//        String[] dateArr = movie.getReleaseDate().split("-");
+//        movieReleaseDate.setText(dateArr[0]);
+//
+//        String formattedRuntime = String.valueOf(movie.getRuntime()) + "minutes";
+//        movieRunningTime.setText(formattedRuntime);
+//
+//        movieRating.setText(String.valueOf(movie.getVoteAverage() + "/10"));
+//        movieSynposis.setText(movie.getOverview());
     }
 
     private void grabMovie(Movie movie) {
