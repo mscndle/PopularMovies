@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.adapter.MoviesViewPagerAdapter;
 import com.popularmovies.mcondle.popularmovies.layout.SlidingTabLayout;
-import com.popularmovies.mcondle.popularmovies.model.SortOrder;
 
 public class MoviesHomeActivity extends AppCompatActivity {
 
@@ -19,7 +18,7 @@ public class MoviesHomeActivity extends AppCompatActivity {
     private SlidingTabLayout tabLayout;
 
     private MoviesViewPagerAdapter moviesViewPagerAdapter;
-    private CharSequence tiles[] = {"POPULAR", "HIGHLY RATED", "FAVORITES"};
+    private CharSequence tiles[] = {"POPULAR", "TOP RATED", "FAVORITES"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +40,6 @@ public class MoviesHomeActivity extends AppCompatActivity {
                 return getResources().getColor(R.color.indicator);
             }
         });
-
         tabLayout.setViewPager(viewPager);
     }
 

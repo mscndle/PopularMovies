@@ -1,5 +1,6 @@
-package com.popularmovies.mcondle.popularmovies.model;
+package com.popularmovies.mcondle.popularmovies.network.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by mscndle on 2/27/16.
+ * Created by mandeep.condle on 2/27/16.
  */
 public class MovieLite implements Parcelable {
 
@@ -57,7 +58,7 @@ public class MovieLite implements Parcelable {
     }
 
     /**
-     * Converts the expected jsonObject into a Movie objects
+     * Converts the expected jsonObject into a Movie object
      *
      * @param jsonObject returned from the api call
      * @return converted MovieLite object
@@ -76,6 +77,11 @@ public class MovieLite implements Parcelable {
         }
 
         return movieLite;
+    }
+
+    public static MovieLite fromCursor(Cursor cursor) {
+        // todo
+        return null;
     }
 
     /**
@@ -100,6 +106,16 @@ public class MovieLite implements Parcelable {
         return movies;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("movie_id: " + getId() + "\n");
+        sb.append("movie_name: " + getTitle() + "\n");
+        sb.append("movie_poster_path: " + getPosterPath() + "\n");
+
+        return sb.toString();
+    }
 
     /********************************
      * implement parcelable methods *
@@ -107,7 +123,7 @@ public class MovieLite implements Parcelable {
 
     @Override
     public int describeContents() {
-        return 0;   //TODO - complete this
+        return 0;   //todo
     }
 
     @Override
@@ -127,6 +143,7 @@ public class MovieLite implements Parcelable {
         }
     };
 
+    // todo
     private MovieLite(Parcel in) {
 
     }

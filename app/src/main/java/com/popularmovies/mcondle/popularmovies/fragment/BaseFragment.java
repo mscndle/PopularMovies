@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.adapter.MoviesGridAdapter;
-import com.popularmovies.mcondle.popularmovies.model.MovieLite;
-import com.popularmovies.mcondle.popularmovies.model.SortOrder;
+import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
+import com.popularmovies.mcondle.popularmovies.network.model.SortOrder;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by mandeep.condle on 4/9/16.
@@ -50,11 +49,10 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_movies_grid, container, false);
-        gridRecyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid_recycler_view);
 
+        gridRecyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid_recycler_view);
         moviesGridAdapter = new MoviesGridAdapter(getContext(), moviesList);
         gridRecyclerView.setAdapter(moviesGridAdapter);
-
         gridRecyclerView.setPadding(2, 2, 2, 2);    // padding is added here and in the ViewHolder for symmetry
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), GRID_COLUMNS_PHONE);

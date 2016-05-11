@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.activity.MovieDetailsActivity;
 import com.popularmovies.mcondle.popularmovies.activity.MoviesHomeActivity;
-import com.popularmovies.mcondle.popularmovies.model.MovieLite;
-import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
+import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
+import com.popularmovies.mcondle.popularmovies.network.MoviesClient;
 import com.popularmovies.mcondle.popularmovies.util.ViewHolderClicked;
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Adapter to get movie data
  *
- * Created by mscndle on 12/29/15.
+ * Created by mandeep.condle on 12/29/15.
  */
 public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.ViewHolder> implements ViewHolderClicked {
 
@@ -35,12 +35,12 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
         TextView textView;
         ViewHolderClicked viewHolderClicked;
 
-        public ViewHolder(final View itemView, ViewHolderClicked viewHolderClicks) {
+        public ViewHolder(final View itemView, ViewHolderClicked viewHolderClicked) {
             super(itemView);
 
             this.imageView = (ImageView) itemView.findViewById(R.id.movie_img);
             this.textView = (TextView) itemView.findViewById(R.id.movie_original_title);
-            this.viewHolderClicked = viewHolderClicks;
+            this.viewHolderClicked = viewHolderClicked;
 
             itemView.setOnClickListener(this);
             itemView.setPadding(2, 2, 2, 2);    // padding is added here and in the RecyclerView for symmetry
@@ -71,8 +71,6 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
      */
     @Override
     public MoviesGridAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // get the inflater to inflate the layout
-
         // grab inflater to inflate ViewHolder based on view id
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
@@ -99,7 +97,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
 
         // set movie poster as grid icon and textview as movie title
         Picasso.with(context)
-                .load(MoviesDbClient.API_BASE_POSTER + movieLite.getPosterPath())
+                .load(MoviesClient.API_BASE_POSTER + movieLite.getPosterPath())
                 .into(imageView);
 
         textView.setText(movieLite.getTitle());
@@ -150,4 +148,5 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
     public void clear() {
         movieLiteList.clear();
     }
+
 }

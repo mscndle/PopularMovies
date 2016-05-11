@@ -5,16 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.popularmovies.mcondle.popularmovies.model.MovieLite;
-import com.popularmovies.mcondle.popularmovies.model.SortOrder;
+import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
+import com.popularmovies.mcondle.popularmovies.network.model.SortOrder;
 import com.popularmovies.mcondle.popularmovies.network.FetchMoviesTask;
 
 import java.util.List;
 
 /**
- * Created by mscndle on 11/28/15.
+ * Created by mandeep.condle on 11/28/15.
  */
 public class MostPopularFragment extends BaseFragment implements MoviesAsyncDelegate {
+
+    private static final String TAG = MostPopularFragment.class.getSimpleName();
 
     public static MostPopularFragment newInstance() {
         return new MostPopularFragment();

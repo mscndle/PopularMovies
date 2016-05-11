@@ -1,4 +1,4 @@
-package com.popularmovies.mcondle.popularmovies.model;
+package com.popularmovies.mcondle.popularmovies.network.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,7 +15,7 @@ import java.util.List;
  * Model retrieved from themoviedb.org
  * This will be used by the adapter
  *
- * Created by mscndle on 1/2/16.
+ * Created by mandeep.condle on 1/2/16.
  */
 public class Movie implements Parcelable {
 

@@ -1,44 +1,69 @@
 package com.popularmovies.mcondle.popularmovies.activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.popularmovies.mcondle.popularmovies.R;
-import com.popularmovies.mcondle.popularmovies.model.Movie;
-import com.popularmovies.mcondle.popularmovies.network.MoviesDbClient;
+import com.popularmovies.mcondle.popularmovies.adapter.DetailsViewPagerAdapter;
+import com.popularmovies.mcondle.popularmovies.fragment.MovieInfoFragment;
+import com.popularmovies.mcondle.popularmovies.fragment.MovieReviewsFragment;
+import com.popularmovies.mcondle.popularmovies.fragment.MovieTrailersFragment;
+import com.popularmovies.mcondle.popularmovies.layout.SlidingTabLayout;
+import com.popularmovies.mcondle.popularmovies.network.model.Movie;
+import com.popularmovies.mcondle.popularmovies.network.MoviesClient;
+import com.popularmovies.mcondle.popularmovies.util.UiUtil;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by mscndle on 1/2/16.
+ * Created by mandeep.condle on 1/2/16.
  */
 public class MovieDetailsActivity extends AppCompatActivity {
 
+    private static final String TAG = MovieDetailsActivity.class.getSimpleName();
     private static final String MOVIE_ID_KEY = "movieIdKey";
+    private static final String MOVIE_FAV = "movieFavorite";
+    private static final int TAB_COUNT = 3;
 
+    private CollapsingToolbarLayout collapsingToolbar;
     private Toolbar toolbar;
-    private ViewPager viewPager;
+    private ImageView movieBackdrop;
 
-    private Movie movie;
+    private MovieInfoFragment movieInfoFragment;
+    private MovieReviewsFragment movieReviewsFragment;
+    private MovieTrailersFragment movieTrailersFragment;
+
+    private ViewPager viewPager;
+    private SlidingTabLayout slidingTabLayout;
+
+    private DetailsViewPagerAdapter viewPagerAdapter;
+    private CharSequence tiles[] = {"INFO", "REVIEWS", "TRAILERS"};
+
+    protected Movie movie;
+    private long movieId;
+    private boolean isFavorite;
+
+    private MovieDetailsHelper helper;
 
     public static void startWith(Activity origin) {
         startWith(origin, null);
     }
 
     public static void startWith(Activity origin, Long movieId) {
+        startWith(origin, movieId, false);
+    }
+
+    public static void startWith(Activity origin, Long movieId, boolean isFavorite) {
         Intent intent = new Intent(origin, MovieDetailsActivity.class);
+        intent.putExtra(MOVIE_FAV, isFavorite);
+
         if (movieId != null) {
             intent.putExtra(MOVIE_ID_KEY, movieId);
         }
@@ -51,72 +76,93 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar = (Toolbar) findViewById(R.id.details_tool_bar);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
         setSupportActionBar(toolbar);
 
+        viewPager = (ViewPager) findViewById(R.id.details_view_pager);
+        viewPagerAdapter = new DetailsViewPagerAdapter(getSupportFragmentManager(), tiles, TAB_COUNT);
+        viewPager.setAdapter(viewPagerAdapter);
 
+        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.details_sliding_tab_layout);
+        slidingTabLayout.setDistributeEvenly(true);
+        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.indicator);
+            }
+        });
+        slidingTabLayout.setViewPager(viewPager);
 
-        long movieId = getIntent().getExtras().getLong(MOVIE_ID_KEY);
-        getExtraMovieDetails(movieId);
-        populateViews();
+        movieId = getIntent().getExtras().getLong(MOVIE_ID_KEY);
+        isFavorite = getIntent().getExtras().getBoolean(MOVIE_FAV);
+
+//        helper = new MovieDetailsHelper(this, fab, isFavorite);
+
+        setupViews();
     }
 
-    private void getExtraMovieDetails(long movieId) {
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getExtraMovieDetails();
+        handleListeners();
+    }
+
+    private void getExtraMovieDetails() {
         FetchMovieDetailsTask task = new FetchMovieDetailsTask();
 
         try {
-            movie = task.execute(movieId).get();
+            task.execute(movieId).get();
+
         } catch (Exception ie) {
-            //
+            UiUtil.showMovieDetailsErrorDialog(this);
         }
     }
 
-    private void populateViews() {
-        // grab views
-//        TextView movieTitle = (TextView) findViewById(R.id.movie_original_title);
-//        ImageView movieDetailImg = (ImageView) findViewById(R.id.movie_detail_img);
-//        TextView movieReleaseDate = (TextView) findViewById(R.id.movie_release_date);
-//        TextView movieRunningTime = (TextView) findViewById(R.id.movie_running_time);
-//        TextView movieRating = (TextView) findViewById(R.id.movie_rating);
-//        TextView movieSynposis = (TextView) findViewById(R.id.movie_synopsis);
+    private void setupViews() {
+        movieBackdrop = (ImageView) findViewById(R.id.poster_backdrop);
 //
-//        // fill title and image
-//        movieTitle.setText(movie.getOriginalTitle());
-//        Picasso.with(this)
-//                .load(MoviesDbClient.API_BASE_POSTER + movie.getPosterPath())
-//                .into(movieDetailImg);
-//
-//        // parse year from date
-//        String[] dateArr = movie.getReleaseDate().split("-");
-//        movieReleaseDate.setText(dateArr[0]);
-//
-//        String formattedRuntime = String.valueOf(movie.getRuntime()) + "minutes";
-//        movieRunningTime.setText(formattedRuntime);
-//
-//        movieRating.setText(String.valueOf(movie.getVoteAverage() + "/10"));
-//        movieSynposis.setText(movie.getOverview());
+//        movieInfoFragment.setupViews();
+//        movieReviewsFragment.setupViews();
+//        movieTrailersFragment.setupViews();
     }
 
-    private void grabMovie(Movie movie) {
-        this.movie = movie;
+    private void populateData() {
+        collapsingToolbar.setTitle(movie.getTitle());
+        Picasso.with(this)
+                .load(MoviesClient.API_BASE_POSTER + movie.getBackdropPath())
+                .fit().into(movieBackdrop);
+
+//        movieInfoFragment.populateData();
+//        movieReviewsFragment.populateData();
+//        movieTrailersFragment.populateData();
+    }
+
+    private void handleListeners() {
+
     }
 
     public class FetchMovieDetailsTask extends AsyncTask<Long, Void, Movie> {
 
         @Override
         protected Movie doInBackground(Long... params) {
-            MoviesDbClient moviesDbClient = MoviesDbClient.getMoviesDbClient();
-            return moviesDbClient.getMovieDetails(params[0]);
+            MoviesClient moviesClient = MoviesClient.getMoviesClient();
+            return moviesClient.getMovieDetails(params[0]);
         }
 
         @Override
         protected void onPostExecute(Movie movie) {
-            //
+            MovieDetailsActivity.this.movie = movie;
+            populateData();
+
+            Toast.makeText(MovieDetailsActivity.this,
+                    MovieDetailsActivity.this.movie.getTitle(),
+                    Toast.LENGTH_SHORT).show();
         }
 
     }
-
-
-
 
 }

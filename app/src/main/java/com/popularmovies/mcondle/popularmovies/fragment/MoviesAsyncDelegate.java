@@ -1,6 +1,6 @@
 package com.popularmovies.mcondle.popularmovies.fragment;
 
-import com.popularmovies.mcondle.popularmovies.model.MovieLite;
+import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
 
 import java.util.List;
 
