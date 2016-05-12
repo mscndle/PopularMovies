@@ -61,5 +61,5 @@ public abstract class BaseFragment extends Fragment {
         return rootView;
     }
 
-    protected abstract void updateMoviesList(SortOrder sortOrder);
+    protected abstract void updateMoviesList();
 }

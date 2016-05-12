@@ -63,9 +63,10 @@ public class MovieInfoFragment extends Fragment {
         // movie ref is grabbed here since this method is called after the movie obj has been fetched
 //        movie = activity.movie;
 
-        Picasso.with(activity)
-                .load(MoviesClient.API_BASE_POSTER + movie.getPosterPath())
-                .into(movieImg);
+//         fixme
+//        Picasso.with(activity)
+//                .load(MoviesClient.API_BASE_POSTER + movie.getPosterPath())
+//                .into(movieImg);
 
         // parse year from date
         String[] dateArr = movie.getReleaseDate().split("-");

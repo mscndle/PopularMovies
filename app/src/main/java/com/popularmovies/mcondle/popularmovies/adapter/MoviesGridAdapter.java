@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.activity.MovieDetailsActivity;
 import com.popularmovies.mcondle.popularmovies.activity.MoviesHomeActivity;
+import com.popularmovies.mcondle.popularmovies.network.Urls;
 import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
 import com.popularmovies.mcondle.popularmovies.network.MoviesClient;
 import com.popularmovies.mcondle.popularmovies.util.ViewHolderClicked;
@@ -97,7 +98,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
 
         // set movie poster as grid icon and textview as movie title
         Picasso.with(context)
-                .load(MoviesClient.API_BASE_POSTER + movieLite.getPosterPath())
+                .load(Urls.API_BASE_POSTER + movieLite.getPosterPath())
                 .into(imageView);
 
         textView.setText(movieLite.getTitle());
@@ -136,6 +137,13 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
      */
     public void insert(MovieLite movieLite) {
         movieLiteList.add(movieLite);
+        notifyDataSetChanged();
+    }
+
+    public void insert(List<MovieLite> movieLites) {
+        for (MovieLite m : movieLites) {
+            movieLiteList.add(m);
+        }
         notifyDataSetChanged();
     }
 

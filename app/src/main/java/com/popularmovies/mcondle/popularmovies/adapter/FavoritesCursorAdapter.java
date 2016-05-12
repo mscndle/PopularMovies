@@ -76,9 +76,10 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
         ImageView imageView = viewHolder.imageView;
         TextView textView = viewHolder.textView;
 
-        Picasso.with(context)
-                .load(MoviesClient.API_BASE_POSTER + moviePosterPath)
-                .into(imageView);
+//          fixme
+//        Picasso.with(context)
+//                .load(MoviesClient.API_BASE_POSTER + moviePosterPath)
+//                .into(imageView);
 
         textView.setText(movieTitle);
     }

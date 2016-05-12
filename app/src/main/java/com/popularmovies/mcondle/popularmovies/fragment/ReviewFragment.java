@@ -25,9 +25,10 @@ public class ReviewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_review, container, false);
-        reviewAuthor = (TextView) rootView.findViewById(R.id.review_author);
-        reviewContent = (TextView) rootView.findViewById(R.id.review_content);
+//        fixme
+//        rootView = inflater.inflate(R.layout.fragment_review, container, false);
+//        reviewAuthor = (TextView) rootView.findViewById(R.id.review_author);
+//        reviewContent = (TextView) rootView.findViewById(R.id.review_content);
 
         return rootView;
     }

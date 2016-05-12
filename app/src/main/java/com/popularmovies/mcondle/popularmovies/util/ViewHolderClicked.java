@@ -8,7 +8,7 @@ import android.content.Context;
 public interface ViewHolderClicked {
 
     /**
-     * interface to handle clicks on the movie grid elements
+     * interface to handle clicks on ViewHolder elements
      * @param context   the Context
      * @param position  the position of the data element in the adapter
      */

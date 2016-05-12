@@ -14,7 +14,8 @@ import java.util.List;
 /**
  * Created by mandeep.condle on 2/28/16.
  */
-public class TopRatedFragment extends BaseFragment implements MoviesAsyncDelegate {
+//public class TopRatedFragment extends BaseFragment implements MoviesAsyncDelegate {
+public class TopRatedFragment extends BaseFragment {
 
     public static TopRatedFragment newInstance() {
         return new TopRatedFragment();
@@ -23,7 +24,6 @@ public class TopRatedFragment extends BaseFragment implements MoviesAsyncDelegat
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = super.onCreateView(inflater, container, savedInstanceState);
-        updateMoviesList(SortOrder.TOP_RATED);
 
         return rootView;
     }
@@ -31,18 +31,16 @@ public class TopRatedFragment extends BaseFragment implements MoviesAsyncDelegat
     @Override
     public void onResume() {
         super.onResume();
-        updateMoviesList(SortOrder.TOP_RATED);
+        updateMoviesList();
     }
 
     /**
      * called to get the movies list based on the sortOrder
-     * @param sortOrder default, popular, latest
      */
-
     @Override
-    protected void updateMoviesList(SortOrder sortOrder) {
-        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask(this);
-        fetchMoviesTask.execute(sortOrder);
+    protected void updateMoviesList() {
+//        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask(this);
+//        fetchMoviesTask.execute(sortOrder);
     }
 
     public void asyncComplete(List<MovieLite> movies) {

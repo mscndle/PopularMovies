@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -17,10 +18,16 @@ import com.popularmovies.mcondle.popularmovies.fragment.MovieInfoFragment;
 import com.popularmovies.mcondle.popularmovies.fragment.MovieReviewsFragment;
 import com.popularmovies.mcondle.popularmovies.fragment.MovieTrailersFragment;
 import com.popularmovies.mcondle.popularmovies.layout.SlidingTabLayout;
+import com.popularmovies.mcondle.popularmovies.network.Urls;
 import com.popularmovies.mcondle.popularmovies.network.model.Movie;
 import com.popularmovies.mcondle.popularmovies.network.MoviesClient;
+import com.popularmovies.mcondle.popularmovies.network.service.MovieDetailsService;
 import com.popularmovies.mcondle.popularmovies.util.UiUtil;
 import com.squareup.picasso.Picasso;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by mandeep.condle on 1/2/16.
@@ -50,7 +57,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private long movieId;
     private boolean isFavorite;
 
-    private MovieDetailsHelper helper;
+    MovieDetailsService movieDetailsService;
 
     public static void startWith(Activity origin) {
         startWith(origin, null);
@@ -98,8 +105,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         movieId = getIntent().getExtras().getLong(MOVIE_ID_KEY);
         isFavorite = getIntent().getExtras().getBoolean(MOVIE_FAV);
 
-//        helper = new MovieDetailsHelper(this, fab, isFavorite);
-
         setupViews();
     }
 
@@ -112,14 +117,19 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void getExtraMovieDetails() {
-        FetchMovieDetailsTask task = new FetchMovieDetailsTask();
 
-        try {
-            task.execute(movieId).get();
+        movieDetailsService = MoviesClient.getInstance().getMovieDetailsService();
+        movieDetailsService.getMovieDetails(movieId, new Callback<Movie>() {
+            @Override
+            public void success(Movie movie, Response response) {
+                MovieDetailsActivity.this.movie = movie;
+            }
 
-        } catch (Exception ie) {
-            UiUtil.showMovieDetailsErrorDialog(this);
-        }
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "MovieDetailsFragment#getExtraMovieDetails() "  + error.toString());
+            }
+        });
     }
 
     private void setupViews() {
@@ -133,7 +143,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private void populateData() {
         collapsingToolbar.setTitle(movie.getTitle());
         Picasso.with(this)
-                .load(MoviesClient.API_BASE_POSTER + movie.getBackdropPath())
+                .load(Urls.API_BASE_POSTER + movie.getBackdropPath())
                 .fit().into(movieBackdrop);
 
 //        movieInfoFragment.populateData();
@@ -145,24 +155,25 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     }
 
-    public class FetchMovieDetailsTask extends AsyncTask<Long, Void, Movie> {
-
-        @Override
-        protected Movie doInBackground(Long... params) {
-            MoviesClient moviesClient = MoviesClient.getMoviesClient();
-            return moviesClient.getMovieDetails(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Movie movie) {
-            MovieDetailsActivity.this.movie = movie;
-            populateData();
-
-            Toast.makeText(MovieDetailsActivity.this,
-                    MovieDetailsActivity.this.movie.getTitle(),
-                    Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    public class FetchMovieDetailsTask extends AsyncTask<Long, Void, Movie> {
+//
+//        @Override
+//        protected Movie doInBackground(Long... params) {
+//            MovieDetailsService movieDetailsService = MoviesClient.getInstance().getMovieDetailsService();
+////            return moviesClient.getMovieDetails(params[0]);
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Movie movie) {
+//            MovieDetailsActivity.this.movie = movie;
+//            populateData();
+//
+//            Toast.makeText(MovieDetailsActivity.this,
+//                    MovieDetailsActivity.this.movie.getTitle(),
+//                    Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
 }

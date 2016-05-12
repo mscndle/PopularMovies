@@ -15,21 +15,21 @@ public class MoviesClient {
     private static final String TAG = MoviesClient.class.getSimpleName();
 
     // PLEASE INSERT API_KEY HERE
-    private static final String API_KEY = "39759d3e11a3b8d6194c19814150629c";
+    public static final String API_KEY = "39759d3e11a3b8d6194c19814150629c";
 
-    private static final String BASE_URL = "";
+    private static final String BASE_URL = "http://api.themoviedb.org";
 
     MoviesListService moviesListService;
     MovieDetailsService movieDetailsService;
 
-    RestAdapter restAdapter;
-    private MoviesClient moviesClient;
+    private static RestAdapter restAdapter;
+    private static MoviesClient moviesClient;
 
     private MoviesClient() {
         // singleton
     }
 
-    public MoviesClient getInstance() {
+    public static MoviesClient getInstance() {
         if (moviesClient == null) {
             moviesClient = new MoviesClient();
         }
@@ -40,7 +40,7 @@ public class MoviesClient {
         return moviesClient;
     }
 
-    private void initRestAdapter() {
+    private static void initRestAdapter() {
         restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(BASE_URL)
