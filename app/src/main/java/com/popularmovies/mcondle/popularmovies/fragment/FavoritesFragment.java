@@ -15,9 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.popularmovies.mcondle.popularmovies.R;
+import com.popularmovies.mcondle.popularmovies.activity.MainActivity;
 import com.popularmovies.mcondle.popularmovies.adapter.FavoritesCursorAdapter;
 import com.popularmovies.mcondle.popularmovies.db.FavoritesContract;
-import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
+import com.popularmovies.mcondle.popularmovies.network.model.Movie;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     private static final int GRID_COLUMNS_TABLET = 3;
 
     protected FavoritesCursorAdapter favoritesAdapter;
-    protected ArrayList<MovieLite> moviesList;
+    protected ArrayList<Movie> moviesList;
     protected Cursor cursor;
 
     protected View rootView;
@@ -69,7 +70,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         gridRecyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid_recycler_view);
 
         cursor = initCursor();
-        favoritesAdapter = new FavoritesCursorAdapter(getContext(), cursor);
+        favoritesAdapter = new FavoritesCursorAdapter(getContext(), ((MainActivity) getActivity()), cursor);
 
         gridRecyclerView.setAdapter(favoritesAdapter);
         gridRecyclerView.setPadding(2, 2, 2, 2);    // padding is added here and in the ViewHolder for symmetry

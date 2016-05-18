@@ -15,7 +15,7 @@ import java.util.List;
  */
 //@Generated("org.jsonschema2pojo")
 //http://www.parcelabler.com/
-public class Video implements Parcelable {
+public class Trailer implements Parcelable {
 
     private String id;
     private String key;
@@ -24,12 +24,16 @@ public class Video implements Parcelable {
     private Long size;
     private String type;
 
-    public Video(String id,
-                 String key,
-                 String name,
-                 String site,
-                 Long size,
-                 String type) {
+    public Trailer() {
+
+    }
+
+    public Trailer(String id,
+                   String key,
+                   String name,
+                   String site,
+                   Long size,
+                   String type) {
 
         this.id = id;
         this.key = key;
@@ -37,16 +41,6 @@ public class Video implements Parcelable {
         this.site = site;
         this.size = size;
         this.type = type;
-    }
-
-    public static Video fromJson(JSONObject jsonObject) {
-
-        return null;
-    }
-
-    public static List<Video> fromJson(JSONArray jsonArray) {
-
-        return null;
     }
 
     /**
@@ -161,7 +155,7 @@ public class Video implements Parcelable {
      * implement parcelable methods *
      ********************************/
 
-    protected Video(Parcel in) {
+    protected Trailer(Parcel in) {
         id = in.readString();
         key = in.readString();
         name = in.readString();
@@ -191,15 +185,15 @@ public class Video implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>() {
+    public static final Parcelable.Creator<Trailer> CREATOR = new Parcelable.Creator<Trailer>() {
         @Override
-        public Video createFromParcel(Parcel in) {
-            return new Video(in);
+        public Trailer createFromParcel(Parcel in) {
+            return new Trailer(in);
         }
 
         @Override
-        public Video[] newArray(int size) {
-            return new Video[size];
+        public Trailer[] newArray(int size) {
+            return new Trailer[size];
         }
     };
 

@@ -11,14 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".BaseApplication">
-        <activity android:name=".activity.MoviesHomeActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MovieDetailsActivity"/>
+        <activity android:name=".activity.MovieDetailActivity"/>
 
         <provider
             android:authorities="com.popularmovies.mcondle.popularmovies"

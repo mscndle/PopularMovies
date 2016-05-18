@@ -3,7 +3,6 @@ package com.popularmovies.mcondle.popularmovies.network.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public class MoviesListResponse implements Parcelable {
 
     private long page;
-    private ArrayList<MovieLite> moviesList;
+    private ArrayList<Movie> results;
     private long total_results;
     private long total_pages;
 
@@ -22,11 +21,11 @@ public class MoviesListResponse implements Parcelable {
     }
 
     public MoviesListResponse(long page,
-                              ArrayList<MovieLite> moviesList,
+                              ArrayList<Movie> results,
                               long total_results,
                               long total_pages) {
         this.page = page;
-        this.moviesList = moviesList;
+        this.results = results;
         this.total_results = total_results;
         this.total_pages = total_pages;
     }
@@ -39,12 +38,12 @@ public class MoviesListResponse implements Parcelable {
         this.page = page;
     }
 
-    public List<MovieLite> getMoviesList() {
-        return moviesList;
+    public List<Movie> getMoviesList() {
+        return results;
     }
 
-    public void setMoviesList(ArrayList<MovieLite> moviesList) {
-        this.moviesList = moviesList;
+    public void setMoviesList(ArrayList<Movie> results) {
+        this.results = results;
     }
 
     public long getTotal_results() {
@@ -71,10 +70,10 @@ public class MoviesListResponse implements Parcelable {
     protected MoviesListResponse(Parcel in) {
         page = in.readLong();
         if (in.readByte() == 0x01) {
-            moviesList = new ArrayList<MovieLite>();
-            in.readList(moviesList, MovieLite.class.getClassLoader());
+            results = new ArrayList<Movie>();
+            in.readList(results, Movie.class.getClassLoader());
         } else {
-            moviesList = null;
+            results = null;
         }
         total_results = in.readLong();
         total_pages = in.readLong();
@@ -88,11 +87,11 @@ public class MoviesListResponse implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(page);
-        if (moviesList == null) {
+        if (results == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(moviesList);
+            dest.writeList(results);
         }
         dest.writeLong(total_results);
         dest.writeLong(total_pages);

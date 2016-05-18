@@ -1,5 +1,6 @@
 package com.popularmovies.mcondle.popularmovies.network.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -12,10 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Model retrieved from themoviedb.org
- * This will be used by the adapter
- *
- * Created by mandeep.condle on 1/2/16.
+ * Created by mandeep.condle on 2/27/16.
  */
 public class Movie implements Parcelable {
 
@@ -23,142 +21,35 @@ public class Movie implements Parcelable {
 
     private long id;
     private String title;
-    private int[] genre_ids;
-    private boolean adult;
-    private String backdrop_path;
-    private String overview;
-    private String original_title;
-    private String original_language;
     private String poster_path;
-    private String release_date;
-    private double popularity;
-    private long vote_count;
-    private boolean video;
+    private String backdrop_path;
     private double vote_average;
-
-    // these fields are grabbed in the MovieDetailsActivity
-    private long budget;
-    private String homepage;
-    private String imdbId;
-    private long revenue;
-    private int runtime;
+    private double popularity;
+    private String overview;
+    private String release_date;
 
     public Movie() {
-        // empty constructor if Gson is used later
+        // empty constructor
     }
 
     public Movie(long id,
                  String title,
-                 int[] genre_ids,
-                 boolean adult,
-                 String backdrop_path,
-                 String overview,
-                 String original_title,
-                 String original_language,
                  String poster_path,
-                 String release_date,
-                 double popularity,
-                 long vote_count,
-                 boolean video,
+                 String backdrop_path,
                  double vote_average,
-                 long budget,
-                 String homepage,
-                 String imdbId,
-                 long revenue,
-                 int runtime) {
+                 double popularity,
+                 String overview,
+                 String release_date) {
 
         this.id = id;
         this.title = title;
-        this.genre_ids = genre_ids;
-        this.adult = adult;
-        this.backdrop_path = backdrop_path;
-        this.overview = overview;
-        this.original_title = original_title;
-        this.original_language = original_language;
         this.poster_path = poster_path;
-        this.release_date = release_date;
-        this.popularity = popularity;
-        this.vote_count = vote_count;
-        this.video = video;
+        this.backdrop_path = backdrop_path;
         this.vote_average = vote_average;
-
-        this.budget = budget;
-        this.homepage = homepage;
-        this.imdbId = imdbId;
-        this.revenue = revenue;
-        this.runtime = runtime;
+        this.popularity = popularity;
+        this.overview = overview;
+        this.release_date = release_date;
     }
-
-    /**
-     * Converts the expected jsonObject into a Movie objects
-     * @param jsonObject    returned from the api call
-     * @return  converted Movie object
-     */
-    public static Movie fromJson(JSONObject jsonObject) {
-        Movie movie = new Movie();
-
-        try {
-            movie.id = jsonObject.getLong("id");
-            movie.title = jsonObject.getString("title");
-            movie.adult = jsonObject.getBoolean("adult");
-            movie.backdrop_path = jsonObject.getString("backdrop_path");
-            movie.overview = jsonObject.getString("overview");
-            movie.original_title = jsonObject.getString("original_title");
-            movie.original_language = jsonObject.getString("original_language");
-            movie.poster_path = jsonObject.getString("poster_path");
-            movie.release_date = jsonObject.getString("release_date");
-            movie.popularity = jsonObject.getDouble("popularity");
-            movie.vote_count = jsonObject.getLong("vote_count");
-            movie.video = jsonObject.getBoolean("video");
-            movie.vote_average = jsonObject.getDouble("vote_average");
-
-//            JSONArray jsonArray = jsonObject.getJSONArray("genre_ids");
-//            int[] genre_ids = new int[jsonArray.length()];
-
-//            for (int i = 0; i < jsonArray.length(); i++) {  // jsonArray = [28, 12, 878, 53]
-////                genre_ids[i] = jsonArray.getJSONObject(i).getInt("");
-//                genre_ids[i] = (Integer) jsonArray.get(i);
-//            }
-//            movie.genre_ids = genre_ids;
-
-            movie.budget = jsonObject.getLong("budget");
-            movie.homepage = jsonObject.getString("homepage");
-            movie.imdbId = jsonObject.getString("imdb_id");
-            movie.revenue = jsonObject.getLong("revenue");
-            movie.runtime = jsonObject.getInt("runtime");
-
-        } catch (JSONException jse) {
-            Log.d(TAG, "JSONException in Movie.fromJson(...) " + jse.toString());
-            return null;
-        }
-
-        return movie;
-    }
-
-    /**
-     * Converts the expected jsonArray into a list of Movie objects
-     * @param jsonArray returned from the api call
-     * @return  List of Movie objects
-     */
-    public static List<Movie> fromJson(JSONArray jsonArray) {
-        List<Movie> movies = new ArrayList<>(jsonArray.length());
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                Movie m = Movie.fromJson(jsonArray.getJSONObject(i));
-                movies.add(m);
-            } catch (JSONException jse) {
-                Log.d(TAG, "JSONException in Movie.fromJson(...) " + jse.toString());
-                // don't exist if there's an issue with a particular json movie object. continue...
-            }
-        }
-
-        return movies;
-    }
-
-    /***********************
-     * getters and setters *
-     ***********************/
 
     public long getId() {
         return id;
@@ -176,20 +67,12 @@ public class Movie implements Parcelable {
         this.title = title;
     }
 
-    public int[] getGenreIds() {
-        return genre_ids;
+    public String getPosterPath() {
+        return poster_path;
     }
 
-    public void setGenreIds(int[] genre_ids) {
-        this.genre_ids = genre_ids;
-    }
-
-    public boolean isAdult() {
-        return adult;
-    }
-
-    public void setAdult(boolean adult) {
-        this.adult = adult;
+    public void setPosterPath(String poster_path) {
+        this.poster_path = poster_path;
     }
 
     public String getBackdropPath() {
@@ -200,44 +83,12 @@ public class Movie implements Parcelable {
         this.backdrop_path = backdrop_path;
     }
 
-    public String getOverview() {
-        return overview;
+    public double getVoteAverage() {
+        return vote_average;
     }
 
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public String getOriginalTitle() {
-        return original_title;
-    }
-
-    public void setOriginalTitle(String original_title) {
-        this.original_title = original_title;
-    }
-
-    public String getOriginalLanguage() {
-        return original_language;
-    }
-
-    public void setOriginalLanguage(String original_language) {
-        this.original_language = original_language;
-    }
-
-    public String getPosterPath() {
-        return poster_path;
-    }
-
-    public void setPosterPath(String poster_path) {
-        this.poster_path = poster_path;
-    }
-
-    public String getReleaseDate() {
-        return release_date;
-    }
-
-    public void setReleaseDate(String release_date) {
-        this.release_date = release_date;
+    public void setVoteAverage(double vote_average) {
+        this.vote_average = vote_average;
     }
 
     public double getPopularity() {
@@ -248,84 +99,105 @@ public class Movie implements Parcelable {
         this.popularity = popularity;
     }
 
-    public long getVoteCount() {
-        return vote_count;
+    public String getOverview() {
+        return overview;
     }
 
-    public void setVoteCount(long vote_count) {
-        this.vote_count = vote_count;
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
-    public boolean isVideo() {
-        return video;
+    public String getReleaseDate() {
+        return release_date;
     }
 
-    public void setVideo(boolean video) {
-        this.video = video;
+    public void setReleaseDate(String release_date) {
+        this.release_date = release_date;
     }
 
-    public double getVoteAverage() {
-        return vote_average;
+    public static Movie fromCursor(Cursor cursor) {
+        // todo
+        return null;
     }
 
-    public void setVoteAverage(double vote_average) {
-        this.vote_average = vote_average;
-    }
+//    /**
+//     * Converts the expected jsonObject into a MovieDetail object
+//     *
+//     * @param jsonObject returned from the api call
+//     * @return converted Movie object
+//     */
+//    public static Movie fromJson(JSONObject jsonObject) {
+//        Movie movie = new Movie();
+//
+//        try {
+//            movie.id = jsonObject.getLong("id");
+//            movie.title = jsonObject.getString("title");
+//            movie.poster_path = jsonObject.getString("poster_path");
+//
+//        } catch (JSONException jse) {
+//            Log.d(TAG, "JSONException in Movie.fromJson(...) " + jse.toString());
+//            return null;
+//        }
+//
+//        return movie;
+//    }
 
-    public int getRuntime() {
-        return runtime;
-    }
+//    /**
+//     * Converts the expected jsonArray into a list of MovieDetail objects
+//     *
+//     * @param jsonArray returned from the api call
+//     * @return List of Movie objects
+//     */
+//    public static List<Movie> fromJson(JSONArray jsonArray) {
+//        List<Movie> movies = new ArrayList<>(jsonArray.length());
+//
+//        for (int i = 0; i < jsonArray.length(); i++) {
+//            try {
+//                Movie m = Movie.fromJson(jsonArray.getJSONObject(i));
+//                movies.add(m);
+//            } catch (JSONException jse) {
+//                Log.d(TAG, "JSONException in Movie.fromJson(...) " + jse.toString());
+//                // don't exist if there's an issue with a particular json movieDetail object. continue...
+//            }
+//        }
+//
+//        return movies;
+//    }
 
-    public void setRuntime(int runtime) {
-        this.runtime = runtime;
-    }
-
-    public long getRevenue() {
-        return revenue;
-    }
-
-    public void setRevenue(long revenue) {
-        this.revenue = revenue;
-    }
-
-    public String getImdbId() {
-        return imdbId;
-    }
-
-    public void setImdbId(String imdbId) {
-        this.imdbId = imdbId;
-    }
-
-    public String getHomepage() {
-        return homepage;
-    }
-
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
-    }
-
-    public long getBudget() {
-        return budget;
-    }
-
-    public void setBudget(long budget) {
-        this.budget = budget;
-    }
 
     /********************************
      * implement parcelable methods *
      ********************************/
 
+    protected Movie(Parcel in) {
+        id = in.readLong();
+        title = in.readString();
+        poster_path = in.readString();
+        backdrop_path = in.readString();
+        vote_average = in.readDouble();
+        popularity = in.readDouble();
+        overview = in.readString();
+        release_date = in.readString();
+    }
+
     @Override
     public int describeContents() {
-        return 0;   //TODO - complete this
+        return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeLong(id);
+        dest.writeString(title);
+        dest.writeString(poster_path);
+        dest.writeString(backdrop_path);
+        dest.writeDouble(vote_average);
+        dest.writeDouble(popularity);
+        dest.writeString(overview);
+        dest.writeString(release_date);
     }
 
+    @SuppressWarnings("unused")
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
         @Override
         public Movie createFromParcel(Parcel in) {
@@ -338,9 +210,4 @@ public class Movie implements Parcelable {
         }
     };
 
-    private Movie(Parcel in) {
-
-    }
-
 }
-

@@ -24,13 +24,13 @@ public class FavoritesContract {
 
         public static final String TABLE_NAME = "favorites";
 
-        // movie id, primary key
+        // movieDetail id, primary key
         public static final String COLUMN_MOVIE_ID = "movie_id";
 
-        // movie title, string
+        // movieDetail title, string
         public static final String COLUMN_MOVIE_TITLE = "movie_title";
 
-        // movie poster path to retrieve the poster for the grid
+        // movieDetail poster path to retrieve the poster for the grid
         public static final String COLUMN_MOVIE_POSTER_PATH = "movie_poster_path";
 
         public static final Uri CONTENT_URI =

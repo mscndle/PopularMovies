@@ -6,42 +6,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.popularmovies.mcondle.popularmovies.R;
-import com.popularmovies.mcondle.popularmovies.activity.MovieDetailsActivity;
-import com.popularmovies.mcondle.popularmovies.activity.MoviesHomeActivity;
-import com.popularmovies.mcondle.popularmovies.network.Urls;
-import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
+import com.popularmovies.mcondle.popularmovies.activity.GridMovieClicked;
 import com.popularmovies.mcondle.popularmovies.network.MoviesClient;
-import com.popularmovies.mcondle.popularmovies.util.ViewHolderClicked;
+import com.popularmovies.mcondle.popularmovies.network.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 /**
- * Adapter to get movie data
+ * Adapter to get movieDetail data
  *
  * Created by mandeep.condle on 12/29/15.
  */
-public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.ViewHolder> implements ViewHolderClicked {
+public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.ViewHolder> {
 
     private static final String TAG = MoviesGridAdapter.class.getSimpleName();
 
-    private List<MovieLite> movieLiteList;
     private Context context;
+    private GridMovieClicked gridMovieClicked;
+    private List<Movie> movieList;
+
+    public MoviesGridAdapter(Context context, GridMovieClicked gridMovieClicked, List<Movie> movieList) {
+        this.context = context;
+        this.gridMovieClicked = gridMovieClicked;
+        this.movieList = movieList;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;
-        TextView textView;
-        ViewHolderClicked viewHolderClicked;
+        GridMovieClicked gridMovieClicked;
+        MoviesGridAdapter adapter;
 
-        public ViewHolder(final View itemView, ViewHolderClicked viewHolderClicked) {
+        public ViewHolder(final View itemView, GridMovieClicked gridMovieClicked, MoviesGridAdapter adapter) {
             super(itemView);
 
             this.imageView = (ImageView) itemView.findViewById(R.id.movie_img);
-            this.textView = (TextView) itemView.findViewById(R.id.movie_original_title);
-            this.viewHolderClicked = viewHolderClicked;
+            this.gridMovieClicked = gridMovieClicked;
+            this.adapter = adapter;
 
             itemView.setOnClickListener(this);
             itemView.setPadding(2, 2, 2, 2);    // padding is added here and in the RecyclerView for symmetry
@@ -49,19 +52,9 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
 
         @Override
         public void onClick(View v) {
-            viewHolderClicked.onViewHolderClicked(imageView.getContext(), getAdapterPosition());
+            Movie movie = adapter.getItem(getAdapterPosition());
+            gridMovieClicked.onGridMovieClicked(movie, false);
         }
-    }
-
-    public MoviesGridAdapter(Context context, List<MovieLite> movieLiteList) {
-        this.context = context;
-        this.movieLiteList = movieLiteList;
-    }
-
-    @Override
-    public void onViewHolderClicked(Context context, int position) {
-        long movieId = getItem(position).getId();
-        MovieDetailsActivity.startWith((MoviesHomeActivity) context, movieId);
     }
 
     /**
@@ -79,7 +72,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
         View view = inflater.inflate(R.layout.movie_item, parent, false);
 
         // return a new ViewHolder instance
-        return new ViewHolder(view, this);
+        return new ViewHolder(view, gridMovieClicked, this);
     }
 
     /**
@@ -89,27 +82,24 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
      */
     @Override
     public void onBindViewHolder(MoviesGridAdapter.ViewHolder viewHolder, int position) {
-        // get the MovieLite model based on the position
-        MovieLite movieLite = movieLiteList.get(position);
+        // get the Movie model based on the position
+        Movie movie = movieList.get(position);
 
         // set each item's views based on model and viewholder
         ImageView imageView = viewHolder.imageView;
-        TextView textView = viewHolder.textView;
 
-        // set movie poster as grid icon and textview as movie title
+        // set movieDetail poster as grid icon and textview as movieDetail title
         Picasso.with(context)
-                .load(Urls.API_BASE_POSTER + movieLite.getPosterPath())
+                .load(MoviesClient.BASE_POSTER_URL + movie.getPosterPath())
                 .into(imageView);
-
-        textView.setText(movieLite.getTitle());
     }
 
     @Override
     public int getItemCount() {
-        if (movieLiteList == null) {
+        if (movieList == null) {
             return -1;
         }
-        return movieLiteList.size();
+        return movieList.size();
     }
 
     @Override
@@ -120,41 +110,41 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Vi
     /**
      * Inserts a new item into the adapter on a predefined position
      * @param position  the position
-     * @param movieLite the object
+     * @param movie the object
      */
-    public void insert(int position, MovieLite movieLite) {
-        movieLiteList.add(position, movieLite);
+    public void insert(int position, Movie movie) {
+        movieList.add(position, movie);
         notifyItemInserted(position);
     }
 
-    public MovieLite getItem(int position) {
-        return movieLiteList.get(position);
+    public Movie getItem(int position) {
+        return movieList.get(position);
     }
 
     /**
      * Inserts a new items into the adapter
-     * @param movieLite the object
+     * @param movie the object
      */
-    public void insert(MovieLite movieLite) {
-        movieLiteList.add(movieLite);
+    public void insert(Movie movie) {
+        movieList.add(movie);
         notifyDataSetChanged();
     }
 
-    public void insert(List<MovieLite> movieLites) {
-        for (MovieLite m : movieLites) {
-            movieLiteList.add(m);
+    public void insert(List<Movie> movies) {
+        for (Movie m : movies) {
+            movieList.add(m);
         }
         notifyDataSetChanged();
     }
 
-    public void remove(MovieLite movieLite) {
-        int position = movieLiteList.indexOf(movieLite);
-        movieLiteList.remove(position);
+    public void remove(Movie movie) {
+        int position = movieList.indexOf(movie);
+        movieList.remove(position);
         notifyItemRemoved(position);
     }
 
     public void clear() {
-        movieLiteList.clear();
+        movieList.clear();
     }
 
 }

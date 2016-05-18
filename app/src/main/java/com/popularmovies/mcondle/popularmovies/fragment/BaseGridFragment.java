@@ -10,23 +10,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.popularmovies.mcondle.popularmovies.R;
+import com.popularmovies.mcondle.popularmovies.activity.MainActivity;
 import com.popularmovies.mcondle.popularmovies.adapter.MoviesGridAdapter;
-import com.popularmovies.mcondle.popularmovies.network.model.MovieLite;
-import com.popularmovies.mcondle.popularmovies.network.model.SortOrder;
+import com.popularmovies.mcondle.popularmovies.network.model.Movie;
 
 import java.util.ArrayList;
 
 /**
  * Created by mandeep.condle on 4/9/16.
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseGridFragment extends Fragment {
 
     protected static final String KEY_MOVIES_LIST = "moviesListPopular";
     protected static final int GRID_COLUMNS_PHONE = 2;
     protected static final int GRID_COLUMNS_TABLET = 3;
 
     protected MoviesGridAdapter moviesGridAdapter;
-    protected ArrayList<MovieLite> moviesList;
+    protected ArrayList<Movie> moviesList;
 
     protected View rootView;
     protected RecyclerView gridRecyclerView;
@@ -51,7 +51,7 @@ public abstract class BaseFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_movies_grid, container, false);
 
         gridRecyclerView = (RecyclerView) rootView.findViewById(R.id.movies_grid_recycler_view);
-        moviesGridAdapter = new MoviesGridAdapter(getContext(), moviesList);
+        moviesGridAdapter = new MoviesGridAdapter(getContext(), ((MainActivity) getActivity()), moviesList);
         gridRecyclerView.setAdapter(moviesGridAdapter);
         gridRecyclerView.setPadding(2, 2, 2, 2);    // padding is added here and in the ViewHolder for symmetry
 
@@ -59,6 +59,12 @@ public abstract class BaseFragment extends Fragment {
         gridRecyclerView.setLayoutManager(gridLayoutManager);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateMoviesList();
     }
 
     protected abstract void updateMoviesList();

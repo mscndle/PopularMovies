@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.popularmovies.mcondle.popularmovies.fragment.FavoritesFragment;
-import com.popularmovies.mcondle.popularmovies.fragment.TopRatedFragment;
-import com.popularmovies.mcondle.popularmovies.fragment.MostPopularFragment;
+import com.popularmovies.mcondle.popularmovies.fragment.MostPopularGridFragment;
+import com.popularmovies.mcondle.popularmovies.fragment.TopRatedGridFragment;
 
 /**
  * FragmentPagerAdapter that provides the grid fragments on the landing page
@@ -28,9 +28,9 @@ public class MoviesViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MostPopularFragment.newInstance();
+                return MostPopularGridFragment.newInstance();
             case 1:
-                return TopRatedFragment.newInstance();
+                return TopRatedGridFragment.newInstance();
             case 2:
                 return FavoritesFragment.newInstance();
             default:

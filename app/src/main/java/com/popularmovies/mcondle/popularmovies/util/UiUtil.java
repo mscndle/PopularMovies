@@ -9,7 +9,7 @@ import android.content.Context;
 public class UiUtil {
 
     public static void showMovieDetailsErrorDialog(Context context) {
-        String message = "Sorry, we were unable to load the movie details at this time. Please try again later!";
+        String message = "Sorry, we were unable to load the movieDetail details at this time. Please try again later!";
         ProgressDialog.show(context, "Error", message);
     }
 

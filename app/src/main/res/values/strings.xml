@@ -5,12 +5,13 @@
     <string name="sort_most_popular">Sort: Most Popular</string>
     <string name="sort_highest_rated">Sort: Highest Rated</string>
 
-    // movie details activity
+    // movieDetail details activity
     <string name="movie_poster">Movie Poster</string>
     <string name="poster_backdrop_content_desc">Movie details poster backdrop</string>
     <string name="trailer_play_button">Movie trailer play button</string>
     <string name="movie_reviews">Reviews</string>
 
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed interdum tortor sit amet elit tristique interdum. Duis semper erat vel magna sagittis scelerisque. Nullam commodo velit at ipsum dictum, consequat viverra lacus dapibus. Nulla id ultrices libero. Mauris sit amet diam ac nunc ultricies auctor. Vivamus orci nunc, laoreet id tempor vel, vulputate cursus libero. Praesent nibh risus, porta id velit a, facilisis ornare sapien. Pellentesque eu ex ex. Vestibulum blandit, ante eu finibus iaculis, ex ligula placerat nisl, interdum auctor lacus eros vel leo. Maecenas eu hendrerit lorem. Donec fermentum, enim in finibus hendrerit, metus nunc volutpat leo, vitae accumsan arcu elit vitae magna. Sed eu magna orci. Integer eleifend vitae odio quis scelerisque. Aliquam at est sed dui sollicitudin interdum a a diam.</string>
+    <string name="add_to_fav">Add to Favorites</string>
+    <string name="remove_from_fav">Remove from Favorites</string>
 
 </resources>

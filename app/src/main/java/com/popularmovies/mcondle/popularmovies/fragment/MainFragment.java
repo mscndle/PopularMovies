@@ -1,15 +1,21 @@
-package com.popularmovies.mcondle.popularmovies.activity;
+package com.popularmovies.mcondle.popularmovies.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.popularmovies.mcondle.popularmovies.R;
+import com.popularmovies.mcondle.popularmovies.activity.MainActivity;
 import com.popularmovies.mcondle.popularmovies.adapter.MoviesViewPagerAdapter;
 import com.popularmovies.mcondle.popularmovies.layout.SlidingTabLayout;
 
-public class MoviesHomeActivity extends AppCompatActivity {
+public class MainFragment extends Fragment {
 
     private static final int TAB_COUNT = 3;
 
@@ -20,19 +26,21 @@ public class MoviesHomeActivity extends AppCompatActivity {
     private MoviesViewPagerAdapter moviesViewPagerAdapter;
     private CharSequence tiles[] = {"POPULAR", "TOP RATED", "FAVORITES"};
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movies_home);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
-        toolBar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolBar);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        viewPager = (ViewPager) findViewById(R.id.movies_view_pager);
-        moviesViewPagerAdapter = new MoviesViewPagerAdapter(getSupportFragmentManager(), tiles, TAB_COUNT);
+        toolBar = (Toolbar) rootView.findViewById(R.id.tool_bar);
+        ((MainActivity) getActivity()).setSupportActionBar(toolBar);
+
+        viewPager = (ViewPager) rootView.findViewById(R.id.movies_view_pager);
+        moviesViewPagerAdapter = new MoviesViewPagerAdapter(getActivity().getSupportFragmentManager(), tiles, TAB_COUNT);
         viewPager.setAdapter(moviesViewPagerAdapter);
 
-        tabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tab_layout);
+        tabLayout = (SlidingTabLayout) rootView.findViewById(R.id.sliding_tab_layout);
         tabLayout.setDistributeEvenly(true);
         tabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
@@ -41,11 +49,8 @@ public class MoviesHomeActivity extends AppCompatActivity {
             }
         });
         tabLayout.setViewPager(viewPager);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        return rootView;
     }
 
 }

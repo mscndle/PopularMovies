@@ -56,6 +56,10 @@ public class Review implements Parcelable {
         this.id = id;
     }
 
+    /********************************
+     * implement parcelable methods *
+     ********************************/
+
     protected Review(Parcel in) {
         id = in.readString();
         author = in.readString();
