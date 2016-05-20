@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public abstract class BaseGridFragment extends Fragment {
 
     protected static final String KEY_MOVIES_LIST = "moviesListPopular";
-    protected static final int GRID_COLUMNS_PHONE = 2;
+    protected static final  GRID_COLUMNS_PHONE = 2;
     protected static final int GRID_COLUMNS_TABLET = 3;
 
     protected MoviesGridAdapter moviesGridAdapter;
