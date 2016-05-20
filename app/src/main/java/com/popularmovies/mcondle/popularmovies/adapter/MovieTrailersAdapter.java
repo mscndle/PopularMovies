@@ -62,19 +62,19 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
         String formattedSizeStr = String.valueOf(trailer.getSize() + "p");
         trailerSize.setText(String.valueOf(formattedSizeStr));
 
-//        final String youtubeUrl = "http://www.youtube.com/watch?v=" + trailer.getKey();
+        final String youtubeUrl = "http://www.youtube.com/watch?v=" + trailer.getKey();
 
-//        trailerText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeUrl)));
-//            }
-//        });
+        trailerText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeUrl)));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return trailersList.size();
     }
 
     public void insert(Trailer trailer) {
