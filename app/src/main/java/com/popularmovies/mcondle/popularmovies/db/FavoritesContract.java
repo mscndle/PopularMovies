@@ -33,6 +33,12 @@ public class FavoritesContract {
         // movieDetail poster path to retrieve the poster for the grid
         public static final String COLUMN_MOVIE_POSTER_PATH = "movie_poster_path";
 
+        public static final String COLUMN_MOVIE_BACKDROP_PATH = "movie_backdrop_path";
+        public static final String COLUMN_MOVIE_VOTE_AVG = "movie_vote_avg";
+        public static final String COLUMN_MOVIE_POPULARITY = "movie_popularity";
+        public static final String COLUMN_MOVIE_OVERVIEW = "movie_overview";
+        public static final String COLUMN_MOVIE_RELEASE_DATE = "movie_release_date";
+
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITES).build();
         public static final String CONTENT_TYPE =

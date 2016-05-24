@@ -17,9 +17,6 @@ import com.popularmovies.mcondle.popularmovies.layout.SlidingTabLayout;
 
 public class MainFragment extends Fragment {
 
-    private static final int COLUMNS_PHONE = 2;
-    private static final int COLUMNS_TABLET = 3;
-
     private static final int TAB_COUNT = 3;
 
     private Toolbar toolBar;
@@ -28,6 +25,10 @@ public class MainFragment extends Fragment {
 
     private MoviesViewPagerAdapter moviesViewPagerAdapter;
     private CharSequence tiles[] = {"POPULAR", "TOP RATED", "FAVORITES"};
+
+//    public static MainFragment newInstance() {
+//        return new MainF
+//    }
 
     @Nullable
     @Override

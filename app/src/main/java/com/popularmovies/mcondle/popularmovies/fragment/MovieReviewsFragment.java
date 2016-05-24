@@ -33,7 +33,7 @@ public class MovieReviewsFragment extends Fragment {
     private static final String MOVIE_ID_KEY = "movieId";
     private static final String REVIEWS_LIST_KEY = "movieReviews";
 
-    private long movieId;
+    private Long movieId;
     private MovieReviewsService movieReviewsService;
 
     private ArrayList<Review> reviewsList;
@@ -53,7 +53,9 @@ public class MovieReviewsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movieId = getArguments().getLong(MOVIE_ID_KEY);
+        if (getArguments() != null) {
+            movieId = getArguments().getLong(MOVIE_ID_KEY);
+        }
 
         if (savedInstanceState == null || !savedInstanceState.containsKey(REVIEWS_LIST_KEY)) {
             reviewsList = new ArrayList<>();
@@ -80,22 +82,32 @@ public class MovieReviewsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        movieReviewsAdapter.notifyDataSetChanged();
+
         updateReviewsList();
     }
 
-    private void updateReviewsList() {
-        movieReviewsService = MoviesClient.getInstance().getMovieReviewsService();
-        movieReviewsService.getMovieReviews(movieId, MoviesClient.API_KEY, new Callback<ReviewsResponse>() {
-            @Override
-            public void success(ReviewsResponse reviewsResponse, Response response) {
-                syncReviews(reviewsResponse.getResults());
-            }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, error.toString());
-            }
-        });
+    private void updateReviewsList() {
+
+        if (movieId != null) {
+            movieReviewsService = MoviesClient.getInstance().getMovieReviewsService();
+            movieReviewsService.getMovieReviews(movieId, MoviesClient.API_KEY, new Callback<ReviewsResponse>() {
+                @Override
+                public void success(ReviewsResponse reviewsResponse, Response response) {
+                    syncReviews(reviewsResponse.getResults());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.d(TAG, error.toString());
+                }
+            });
+        }
     }
 
     private void syncReviews(List<Review> reviewsList) {

@@ -33,7 +33,7 @@ public class MovieTrailersFragment extends Fragment {
     private static final String MOVIE_ID_KEY = "movieId";
     private static final String TRAILERS_LIST_KEY = "movieTrailers";
 
-    private long movieId;
+    private Long movieId;
     private MovieTrailersService movieTrailersService;
 
     private ArrayList<Trailer> trailersList;
@@ -53,7 +53,10 @@ public class MovieTrailersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movieId = getArguments().getLong(MOVIE_ID_KEY);
+
+        if (getArguments() != null) {
+            movieId = getArguments().getLong(MOVIE_ID_KEY);
+        }
 
         if (savedInstanceState == null || !savedInstanceState.containsKey(TRAILERS_LIST_KEY)) {
             trailersList = new ArrayList<>();
@@ -80,22 +83,31 @@ public class MovieTrailersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         updateTrailersList();
     }
 
-    private void updateTrailersList() {
-        movieTrailersService = MoviesClient.getInstance().getMovieTrailersService();
-        movieTrailersService.getMovieTrailers(movieId, MoviesClient.API_KEY, new Callback<TrailersResponse>() {
-            @Override
-            public void success(TrailersResponse trailersResponse, Response response) {
-                syncTrailers(trailersResponse.getResults());
-            }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, error.toString());
-            }
-        });
+    private void updateTrailersList() {
+
+        if (movieId != null) {
+            movieTrailersService = MoviesClient.getInstance().getMovieTrailersService();
+            movieTrailersService.getMovieTrailers(movieId, MoviesClient.API_KEY, new Callback<TrailersResponse>() {
+                @Override
+                public void success(TrailersResponse trailersResponse, Response response) {
+                    syncTrailers(trailersResponse.getResults());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.d(TAG, error.toString());
+                }
+            });
+        }
     }
 
     private void syncTrailers(List<Trailer> trailersList) {

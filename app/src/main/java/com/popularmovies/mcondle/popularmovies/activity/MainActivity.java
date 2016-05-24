@@ -1,18 +1,27 @@
 package com.popularmovies.mcondle.popularmovies.activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.popularmovies.mcondle.popularmovies.R;
 import com.popularmovies.mcondle.popularmovies.fragment.MainFragment;
 import com.popularmovies.mcondle.popularmovies.fragment.MovieDetailFragment;
+import com.popularmovies.mcondle.popularmovies.network.MoviesClient;
 import com.popularmovies.mcondle.popularmovies.network.model.Movie;
+import com.popularmovies.mcondle.popularmovies.network.model.MoviesListResponse;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by mscndle on 5/15/16.
  */
-public class MainActivity extends AppCompatActivity implements GridMovieClicked {
+public class MainActivity extends BaseActivity implements GridMovieClicked {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String MOVIE_KEY = "movie";
     private static final String MOVIE_FAV_KEY = "movieFav";
@@ -35,21 +44,36 @@ public class MainActivity extends AppCompatActivity implements GridMovieClicked 
             twoPane = true;
 
             if (savedInstanceState == null) {
-                MovieDetailFragment fragment = new MovieDetailFragment();
+                MovieDetailFragment detailFrag = new MovieDetailFragment();
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_details_container, fragment)
+                        .replace(R.id.movie_details_container, detailFrag)
                         .commit();
             }
+        }
+
+        /** force phones to portrait mode and tablets to landscape */
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
     }
 
     @Override
     public void onGridMovieClicked(Movie movie, boolean isFavorite) {
-        Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(MOVIE_KEY, movie);
-        intent.putExtra(MOVIE_FAV_KEY, isFavorite);
 
-        startActivity(intent);
+        if (twoPane) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_details_container, MovieDetailFragment.newInstance(movie, isFavorite))
+                    .commit();
+
+        } else {
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra(MOVIE_KEY, movie);
+            intent.putExtra(MOVIE_FAV_KEY, isFavorite);
+
+            startActivity(intent);
+        }
     }
 
 }

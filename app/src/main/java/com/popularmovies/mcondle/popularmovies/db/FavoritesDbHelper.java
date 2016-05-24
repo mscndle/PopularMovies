@@ -28,9 +28,14 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + FavoritesEntry.TABLE_NAME + " (" +
                 // add all columns + default ._ID
                 FavoritesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                FavoritesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
+                FavoritesEntry.COLUMN_MOVIE_ID + " LONG NOT NULL, " +
                 FavoritesEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, " +
                 FavoritesEntry.COLUMN_MOVIE_POSTER_PATH + " TEXT NOT NULL, " +
+                FavoritesEntry.COLUMN_MOVIE_BACKDROP_PATH + " TEXT NOT NULL, " +
+                FavoritesEntry.COLUMN_MOVIE_VOTE_AVG + " DOUBLE NOT NULL, " +
+                FavoritesEntry.COLUMN_MOVIE_POPULARITY + " DOUBLE NOT NULL, " +
+                FavoritesEntry.COLUMN_MOVIE_OVERVIEW + " TEXT NOT NULL, " +
+                FavoritesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL, " +
 
                 /*** Taken from project Sunshine sample code  ***/
                 // To assure the application have just one favorites entry per movie_id
@@ -45,6 +50,5 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + FavoritesEntry.TABLE_NAME);
         onCreate(db);
     }
-
 
 }

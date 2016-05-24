@@ -53,4 +53,5 @@ public class MostPopularGridFragment extends BaseGridFragment {
             moviesGridAdapter.insert(m);
         }
     }
+
 }

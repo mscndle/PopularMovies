@@ -3,16 +3,19 @@ package com.popularmovies.mcondle.popularmovies.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import com.popularmovies.mcondle.popularmovies.fragment.MovieInfoFragment;
 import com.popularmovies.mcondle.popularmovies.fragment.MovieReviewsFragment;
 import com.popularmovies.mcondle.popularmovies.fragment.MovieTrailersFragment;
 import com.popularmovies.mcondle.popularmovies.network.model.Movie;
+import com.popularmovies.mcondle.popularmovies.network.service.MovieTrailersService;
 
 /**
  * Created by mandeep.condle on 5/4/16.
  */
-public class DetailsViewPagerAdapter extends FragmentPagerAdapter {
+public class DetailsViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabCount;
     private CharSequence titles[];
@@ -32,14 +35,37 @@ public class DetailsViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MovieInfoFragment.newInstance(movie, isFavorite);
+//                if (movie != null) {
+                    return MovieInfoFragment.newInstance(movie, isFavorite);
+//                } else {
+//                    return new MovieInfoFragment();
+//                }
+
             case 1:
-                return MovieReviewsFragment.newInstance(movie.getId());
+//                if (movie != null) {
+                    return MovieReviewsFragment.newInstance(movie.getId());
+//                } else {
+//                    return new MovieReviewsFragment();
+//                }
+
             case 2:
-                return MovieTrailersFragment.newInstance(movie.getId());
+//                if (movie != null) {
+                    return MovieTrailersFragment.newInstance(movie.getId());
+//                } else {
+//                    return new MovieTrailersFragment();
+//                }
         }
 
         throw new IllegalArgumentException("postion has to be between 0 and 2");
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        super.setPrimaryItem(container, position, object);
+    }
+
+    public void setItem(int position) {
+
     }
 
     @Override

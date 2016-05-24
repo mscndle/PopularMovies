@@ -22,8 +22,8 @@ import java.util.ArrayList;
 public abstract class BaseGridFragment extends Fragment {
 
     protected static final String KEY_MOVIES_LIST = "moviesListPopular";
-    protected static final  GRID_COLUMNS_PHONE = 2;
-    protected static final int GRID_COLUMNS_TABLET = 3;
+
+    private int gridColumns;
 
     protected MoviesGridAdapter moviesGridAdapter;
     protected ArrayList<Movie> moviesList;
@@ -44,6 +44,8 @@ public abstract class BaseGridFragment extends Fragment {
         } else {
             moviesList = savedInstanceState.getParcelableArrayList(KEY_MOVIES_LIST);
         }
+
+        gridColumns = getResources().getInteger(R.integer.num_columns);
     }
 
     @Override
@@ -55,7 +57,7 @@ public abstract class BaseGridFragment extends Fragment {
         gridRecyclerView.setAdapter(moviesGridAdapter);
         gridRecyclerView.setPadding(2, 2, 2, 2);    // padding is added here and in the ViewHolder for symmetry
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), GRID_COLUMNS_PHONE);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), gridColumns);
         gridRecyclerView.setLayoutManager(gridLayoutManager);
 
         return rootView;
