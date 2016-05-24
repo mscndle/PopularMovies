@@ -19,7 +19,7 @@ public class MoviesClient {
     private static final String TAG = MoviesClient.class.getSimpleName();
 
     // PLEASE INSERT API_KEY HERE
-    public static final String API_KEY = "39759d3e11a3b8d6194c19814150629c";
+    public static final String API_KEY = "";;;
 
     private static final String BASE_URL = "http://api.themoviedb.org/3";
     public static final String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185"; //using size w185 for now
